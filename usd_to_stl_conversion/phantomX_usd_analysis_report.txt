@@ -1,0 +1,53 @@
+PhantomX USD analysis summary
+=============================
+
+Layer units:
+- All five uploaded layers declare metersPerUnit = 1 and upAxis = Z.
+- Meaning: composed USD world-space dimensions are in meters.
+- STL has no unit metadata, so for Fusion you must either import as meters or export vertices scaled x1000 and import as millimeters.
+
+Dependency graph:
+- phantomX_shank_capsule.usd
+  - defaultPrim: /phantomX
+  - selected variants: Physics=PhysX, Robot=Robot, Sensor=Sensors
+  - Physics=PhysX payload: configuration/phantomX_physics.usd
+  - Robot=Robot payload: configuration/phantomX_robot.usd
+  - Sensor=Sensors payload: configuration/phantomX_sensor.usd
+  - Physics=None reference: configuration/phantomX_base.usd
+- phantomX_physics.usd
+  - subLayer: phantomX_base.usd
+  - adds physics joints, collision groups, colliders, scene/render metadata
+- phantomX_base.usd
+  - contains the visual mesh data: 42 Mesh prims, about 2,062,630 triangles total
+  - contains raw prototype meshes under /meshes and visual instances under /visuals
+  - raw /meshes values are effectively millimeter-sized numbers, but /visuals applies xformOp:scale = 0.001 so USD world-space becomes meters
+- phantomX_robot.usd
+  - Isaac robot/link/joint metadata only; no mesh geometry
+- phantomX_sensor.usd
+  - placeholder /phantomX only; no mesh geometry
+- External material dependency: OmniPBR.mdl. This is not needed for STL geometry.
+
+Critical conversion warnings:
+1. The top file expects its dependency files inside a configuration/ folder. If all files are side-by-side, payloads will not resolve.
+2. For visual CAD/Fusion editing, use phantomX_base.usd or phantomX_physics.usd as the geometry source, not only phantomX_shank_capsule.usd.
+3. phantomX_shank_capsule.usd adds collision primitives: 6 invisible foot spheres and 6 shank capsules. Those are simulation colliders, not the high-resolution visual mesh.
+4. In phantomX_base.usd, exporting raw /meshes or exporting /visuals without applying transforms can create a 1000x scale error. Correct export must apply /visuals scale 0.001 and then either import STL as meters or scale output x1000 for millimeters.
+
+Measured visual dimensions after applying USD transforms:
+- Whole robot visual/collider bbox: about 0.515571 m x 0.546697 m x 0.162714 m = 515.571 mm x 546.697 mm x 162.714 mm.
+- Body visual: 0.273424 m x 0.230000 m x 0.038000 m = 273.424 mm x 230.000 mm x 38.000 mm.
+- Coxa visual: 0.073934 m x 0.050068 m x 0.050068 m = 73.934 mm x 50.068 mm x 50.068 mm.
+- Femur visual: 0.042362 m x 0.090147 m x 0.050068 m = 42.362 mm x 90.147 mm x 50.068 mm.
+- Tibia visual: 0.149578 m x 0.070594 m x 0.043002 m = 149.578 mm x 70.594 mm x 43.002 mm.
+
+Recommended command using the included script:
+- Install dependencies: pip install usd-core trimesh numpy
+- Export one tibia for Fusion in millimeters:
+  python usd_to_fusion_stl.py phantomX_base.usd --root /visuals/tibia_LF --scale 1000 --out tibia_LF_mm.stl
+- Export all visual parts separately:
+  python usd_to_fusion_stl.py phantomX_base.usd --root /visuals --split-children --scale 1000 --out-dir fusion_stl_mm
+
+Fusion import check:
+- Use Insert > Insert Mesh rather than Upload/Open.
+- Set Units = millimeter if you exported with --scale 1000.
+- Inspect the imported tibia; expected size is roughly 149.578 mm x 70.594 mm x 43.002 mm.
