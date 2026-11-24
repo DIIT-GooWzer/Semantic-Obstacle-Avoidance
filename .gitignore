@@ -1,0 +1,22 @@
+# Virtual environments & dependencies
+.venv/
+mcp-lmstudio/node_modules/
+# Python bytecode cache
+__pycache__/
+*.pyc
+# Oversized files (>100 MB GitHub limit / multi-GB raw training data)
+weights/clip/ViT-B-32.pt
+dataset/
+# Local binaries / duplicate archives
+bin/
+tiger-rebuilt.zip
+!dataset/yolo_dataset/
+dataset/yolo_dataset/*
+!dataset/yolo_dataset/custom.yaml
+!dataset/runs/
+dataset/runs/**
+!dataset/runs/detect/
+!dataset/runs/detect/train-2/
+!dataset/runs/detect/train-2/weights/
+!dataset/runs/detect/train-2/weights/best.pt
+!dataset/runs/detect/train-2/weights/best.onnx

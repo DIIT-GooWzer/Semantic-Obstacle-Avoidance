@@ -1,0 +1,20 @@
+{
+  "config_id": "yolo_world_s_v2_vocab_v1",
+  "checkpoint": "yolov8s-worldv2.pt",
+  "classes": [
+    {"name": "person", "category": "BIOLOGICAL"},
+    {"name": "cow", "category": "BIOLOGICAL"},
+    {"name": "tiger", "category": "BIOLOGICAL"},
+    {"name": "car", "category": "STATIC_BAR"},
+    {"name": "traffic cone", "category": "STATIC_BAR"},
+    {"name": "pothole", "category": "MINOR_SURFACE"},
+    {"name": "statue", "category": "STATIC_BAR"}
+  ],
+  "image_size": 640,
+  "decode_confidence": 0.45,
+  "qualifying_confidence": 0.6,
+  "confidence_hits": 5,
+  "nms_iou": 0.5,
+  "device": "cpu",
+  "note": "One fixed vocabulary across all seven setups. No per-scenario prompt changes or training. Absence of detections is abstention, not CLEAR."
+}

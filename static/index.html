@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhantomX Hexapod - Mission Control & Web Teleoperation</title>
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --bg-panel: #111827;
+      --bg-card: #1f2937;
+      --border-color: #374151;
+      --primary: #06b6d4;
+      --primary-hover: #0891b2;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #a855f7;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header Bar */
+    header {
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title span {
+      color: var(--primary);
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .badge-connected {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-connected .badge-dot { background: #10b981; box-shadow: 0 0 8px #10b981; }
+
+    .badge-bridge {
+      background: rgba(6, 182, 212, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+    .badge-bridge .badge-dot { background: #06b6d4; box-shadow: 0 0 8px #06b6d4; }
+
+    .badge-sim {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-sim .badge-dot { background: #f59e0b; }
+
+    .badge-disconnected {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .badge-disconnected .badge-dot { background: #ef4444; }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* App Container */
+    .app-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr 380px;
+      flex: 1;
+      height: calc(100vh - 58px);
+      overflow: hidden;
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .panel-left {
+      border-right: 1px solid var(--border-color);
+    }
+
+    .panel-center {
+      position: relative;
+      background: #070a13;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-right {
+      border-left: 1px solid var(--border-color);
+    }
+
+    .section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .section-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Buttons & Controls */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    .btn:hover {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+    }
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary { background: var(--primary); color: #000; font-weight: 700; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-warning { background: var(--warning); color: #000; font-weight: 700; }
+    .btn-danger { background: var(--danger); color: #fff; }
+
+    /* D-Pad Teleoperation Grid */
+    .dpad-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .dpad-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dpad-btn {
+      width: 58px;
+      height: 52px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .dpad-btn:hover {
+      background: #334155;
+      border-color: var(--primary);
+    }
+
+    .dpad-btn:active, .dpad-btn.active {
+      background: var(--primary);
+      color: #000;
+    }
+
+    .dpad-btn-sub {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .dpad-btn:active .dpad-btn-sub, .dpad-btn.active .dpad-btn-sub {
+      color: #1e293b;
+    }
+
+    .dpad-stop {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #f87171;
+    }
+    .dpad-stop:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* Shift Row */
+    .shift-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+      width: 100%;
+    }
+
+    /* Quick Master Buttons */
+    .master-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    /* Areas Grid */
+    .areas-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .area-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .area-card:hover {
+      border-color: var(--primary);
+      background: #253347;
+    }
+
+    .area-card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .area-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .area-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Custom Target Input */
+    .target-inputs {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .target-input {
+      flex: 1;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    /* Sliders */
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+    }
+
+    .slider {
+      width: 130px;
+      accent-color: var(--primary);
+    }
+
+    /* Canvas Map */
+    .map-header {
+      padding: 10px 16px;
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .map-coordinates {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--primary);
+    }
+
+    .canvas-container {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    canvas#mapCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    .map-overlay-instructions {
+      position: absolute;
+      bottom: 12px;
+      left: 16px;
+      background: rgba(11, 15, 25, 0.8);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Right Panel: Camera & Sensors */
+    .camera-frame {
+      width: 100%;
+      height: 200px;
+      background: #000;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .camera-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .camera-placeholder {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    /* Stress & Radar Gauges */
+    .meter-container {
+      margin-bottom: 10px;
+    }
+
+    .meter-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+
+    .meter-bar {
+      height: 10px;
+      background: #1e293b;
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.2s ease, background 0.2s ease;
+    }
+
+    /* 3 Sector Depth Radar */
+    .radar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin: 8px 0;
+    }
+
+    .radar-sector {
+      background: #1e293b;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .radar-sector-name {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .radar-sector-val {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    /* VLM Box */
+    .vlm-box {
+      background: #1e293b;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 0.8rem;
+    }
+
+    .vlm-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .vlm-reasoning {
+      background: #0f172a;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #94a3b8;
+      max-height: 48px;
+      overflow-y: auto;
+    }
+
+    /* Diagnostics Grid */
+    .diag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    .diag-item {
+      background: #1e293b;
+      padding: 6px 8px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .diag-item span:first-child {
+      color: var(--text-muted);
+    }
+
+    /* Event Log */
+    .log-container {
+      height: 110px;
+      background: #0b0f19;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .log-item {
+      padding: 2px 0;
+      border-bottom: 1px solid #172033;
+    }
+
+    .log-time { color: var(--text-muted); margin-right: 4px; }
+    .log-cat { font-weight: bold; margin-right: 4px; color: var(--primary); }
+
+    /* Keyboard indicator */
+    .key-badge {
+      display: inline-block;
+      padding: 1px 5px;
+      background: #334155;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-family: var(--font-mono);
+      color: #cbd5e1;
+      margin-left: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-title">
+        <span>⬡</span> PHANTOMX <span>MISSION CONTROL</span>
+      </div>
+      <div class="header-badges">
+        <div id="wsBadge" class="badge badge-disconnected">
+          <div class="badge-dot"></div>
+          <span id="wsStatusText">Disconnected</span>
+        </div>
+        <div id="bridgeBadge" class="badge badge-sim">
+          <div class="badge-dot"></div>
+          <span id="bridgeText">Digital Twin</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-warning" onclick="sendControl('pause')">⏸ Pause</button>
+      <button class="btn btn-success" onclick="sendControl('resume')">▶ Resume</button>
+      <button class="btn btn-danger" onclick="sendControl('stop')">🛑 Emergency Stop</button>
+      <button class="btn" onclick="sendControl('reset')">↺ Reset</button>
+    </div>
+  </header>
+
+  <!-- App Layout -->
+  <div class="app-layout">
+
+    <!-- Left Panel: Teleoperation & Mission Control -->
+    <div class="panel panel-left">
+
+      <!-- Master Control -->
+      <div class="section">
+        <div class="section-title">Robot Mode & Drive Controls</div>
+        <div class="master-btn-row">
+          <button id="btnAutoScan" class="btn btn-primary" onclick="startAutoScan()">
+            ⚡ Auto Scan Sweep
+          </button>
+          <button id="btnManualMode" class="btn" onclick="setManualMode()">
+            🎮 Manual Teleop
+          </button>
+        </div>
+
+        <!-- Teleop D-Pad -->
+        <div class="dpad-container">
+          <div class="dpad-row">
+            <button class="dpad-btn" id="btnFwd" onmousedown="teleop('forward_step')" title="Drive Forward (W or ↑)">
+              ▲
+              <span class="dpad-btn-sub">FWD (W)</span>
+            </button>
+          </div>
+          <div class="dpad-row">
+            <button class="dpad-btn" id="btnLeft" onmousedown="teleop('turn_left')" title="Rotate Left (A or ←)">
+              ◀
+              <span class="dpad-btn-sub">LEFT (A)</span>
+            </button>
+            <button class="dpad-btn dpad-stop" id="btnStop" onmousedown="teleop('stop')" title="Stop (Space)">
+              ■
+              <span class="dpad-btn-sub">STOP</span>
+            </button>
+            <button class="dpad-btn" id="btnRight" onmousedown="teleop('turn_right')" title="Rotate Right (D or →)">
+              ▶
+              <span class="dpad-btn-sub">RIGHT (D)</span>
+            </button>
+          </div>
+          <div class="dpad-row">
+            <button class="dpad-btn" id="btnRev" onmousedown="teleop('reverse_step')" title="Drive Backward (S or ↓)">
+              ▼
+              <span class="dpad-btn-sub">REV (S)</span>
+            </button>
+          </div>
+
+          <!-- Lateral Lane Shifts -->
+          <div class="shift-row">
+            <button class="btn" id="btnShiftLeft" onmousedown="teleop('lane_shift_left')">
+              ⮜⮜ Shift Left (Q)
+            </button>
+            <button class="btn" id="btnShiftRight" onmousedown="teleop('lane_shift_right')">
+              Shift Right (E) ⮞⮞
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Areas Mission Dispatch -->
+      <div class="section">
+        <div class="section-title">
+          Mission Areas Dispatch
+          <span style="font-size:0.7rem; color:var(--text-muted);">SELECT TARGET</span>
+        </div>
+        <div class="areas-grid" id="areasContainer">
+          <!-- Dynamically populated from server -->
+        </div>
+
+        <!-- Custom Target Coordinates -->
+        <div style="margin-top: 12px;">
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 4px;">
+            Drive to Custom Coordinate (X, Y)
+          </div>
+          <div class="target-inputs">
+            <input type="number" step="0.5" id="targetX" class="target-input" placeholder="X Coord" value="9.0">
+            <input type="number" step="0.5" id="targetY" class="target-input" placeholder="Y Coord" value="-1.0">
+            <button class="btn btn-primary" onclick="submitCustomTarget()">Go</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation & Motion Settings -->
+      <div class="section">
+        <div class="section-title">Motion Dynamics Settings</div>
+        <div class="control-row">
+          <span>Forward Speed (<span id="lblSpeed">0.5</span> m/s)</span>
+          <input type="range" class="slider" min="0.2" max="1.5" step="0.1" value="0.5" id="sldSpeed" oninput="updateSettings()">
+        </div>
+        <div class="control-row">
+          <span>Turn Speed (<span id="lblTurnSpeed">180</span> °/s)</span>
+          <input type="range" class="slider" min="60" max="360" step="15" value="180" id="sldTurn" oninput="updateSettings()">
+        </div>
+        <div class="control-row">
+          <span>Step Pause Distance (<span id="lblStep">0.4</span> m)</span>
+          <input type="range" class="slider" min="0.2" max="1.0" step="0.05" value="0.4" id="sldStep" oninput="updateSettings()">
+        </div>
+        <div class="control-row">
+          <span>Lane Shift Width (<span id="lblShift">0.5</span> m)</span>
+          <input type="range" class="slider" min="0.3" max="1.0" step="0.05" value="0.5" id="sldShift" oninput="updateSettings()">
+        </div>
+      </div>
+
+      <!-- Data Export -->
+      <div class="section">
+        <div class="section-title">Defect Map & Report Export</div>
+        <div style="display: flex; gap: 8px;">
+          <a href="/api/export/json" target="_blank" class="btn" style="flex:1; text-decoration:none; text-align:center;">📥 Export JSON</a>
+          <a href="/api/export/png" target="_blank" class="btn" style="flex:1; text-decoration:none; text-align:center;">🗺 Export PNG</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Center Panel: Live 2D Interactive Map -->
+    <div class="panel panel-center">
+      <div class="map-header">
+        <div>
+          <span style="font-weight:700; font-size:0.88rem; color:#fff;">NAVMESH TRACK RADAR</span>
+          <span id="mapTrackName" style="color:var(--text-muted); font-size:0.75rem; margin-left:8px;">Sunway West Complex</span>
+        </div>
+        <div class="map-coordinates">
+          POSE: <span id="lblPose">X: 0.00 | Y: 0.00 | YAW: 0.0°</span>
+        </div>
+      </div>
+
+      <div class="canvas-container">
+        <canvas id="mapCanvas"></canvas>
+        <div class="map-overlay-instructions">
+          💡 Click anywhere on the map to command robot destination | WASD / Arrows to drive
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Camera & Live Sensors -->
+    <div class="panel panel-right">
+
+      <!-- Camera Feed -->
+      <div class="section">
+        <div class="section-title">
+          Robot Camera View
+          <span id="camStatus" style="font-size:0.7rem; color:var(--success);">LIVE</span>
+        </div>
+        <div class="camera-frame">
+          <img id="cameraImg" src="" alt="Robot Live Camera" style="display:none;">
+          <div id="cameraPlaceholder" class="camera-placeholder">
+            📷 Waiting for Isaac Sim camera stream...
+          </div>
+        </div>
+      </div>
+
+      <!-- Depth Sector Radar -->
+      <div class="section">
+        <div class="section-title">Spatial Proximity Radar</div>
+        <div class="radar-grid">
+          <div class="radar-sector" id="sectorLeft">
+            <div class="radar-sector-name">Left Sector</div>
+            <div class="radar-sector-val" id="valDepthLeft">-- m</div>
+          </div>
+          <div class="radar-sector" id="sectorCenter">
+            <div class="radar-sector-name">Center Obstacle</div>
+            <div class="radar-sector-val" id="valDepthCenter">-- m</div>
+          </div>
+          <div class="radar-sector" id="sectorRight">
+            <div class="radar-sector-name">Right Sector</div>
+            <div class="radar-sector-val" id="valDepthRight">-- m</div>
+          </div>
+        </div>
+
+        <!-- Closest Obstacle Meter -->
+        <div class="meter-container" style="margin-top: 8px;">
+          <div class="meter-label-row">
+            <span>Front Obstacle Proximity</span>
+            <span id="valClosestDist" style="font-family:var(--font-mono); font-weight:700;">-- m</span>
+          </div>
+          <div class="meter-bar">
+            <div id="meterObstacle" class="meter-fill" style="background:var(--success);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stress & Cortisol Level -->
+      <div class="section">
+        <div class="section-title">
+          Robot Cortisol / Stress Engine
+          <span id="badgeStressBand" class="badge" style="background:#10b981; color:#fff;">LOW</span>
+        </div>
+        <div class="meter-container">
+          <div class="meter-label-row">
+            <span>Stress Level (<span id="valStress">0.0</span> / 10)</span>
+            <span>Potential: <span id="valPotential" style="font-family:var(--font-mono);">0.00</span></span>
+          </div>
+          <div class="meter-bar">
+            <div id="meterStress" class="meter-fill" style="background: #10b981; width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VLM Perception Reasoning -->
+      <div class="section">
+        <div class="section-title">VLM Obstacle Classifier</div>
+        <div class="vlm-box">
+          <div class="vlm-row">
+            <span>Obstacle Category:</span>
+            <strong id="vlmCategory" style="color:var(--primary);">CLEAR</strong>
+          </div>
+          <div class="vlm-row">
+            <span>Threat Risk Score:</span>
+            <span id="vlmRisk">0 / 10</span>
+          </div>
+          <div class="vlm-row">
+            <span>Avoidance Action:</span>
+            <strong id="vlmAction" style="color:var(--success);">SWEEP_PATH</strong>
+          </div>
+          <div class="vlm-reasoning" id="vlmReasoning">
+            Path is clear for regular scanning sweep.
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnostics & System Status -->
+      <div class="section">
+        <div class="section-title">Diagnostics & Telemetry</div>
+        <div class="diag-grid">
+          <div class="diag-item">
+            <span>State:</span>
+            <span id="diagState" style="color:var(--primary);">IDLE</span>
+          </div>
+          <div class="diag-item">
+            <span>Sub-Phase:</span>
+            <span id="diagPhase">IDLE</span>
+          </div>
+          <div class="diag-item">
+            <span>Battery:</span>
+            <span id="diagBattery" style="color:var(--success);">98%</span>
+          </div>
+          <div class="diag-item">
+            <span>Link Latency:</span>
+            <span id="diagLatency">12 ms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Log -->
+      <div class="section" style="border-bottom:none;">
+        <div class="section-title">Mission Event Log</div>
+        <div class="log-container" id="eventLog">
+          <div class="log-item">
+            <span class="log-time">00:00:00</span>
+            <span class="log-cat">SYSTEM</span> Web UI Initialized.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // ============================================================
+    // STATE & WEBSOCKET SETUP
+    // ============================================================
+    let ws = null;
+    let latestState = null;
+    let canvas = document.getElementById("mapCanvas");
+    let ctx = canvas.getContext("2d");
+
+    function initWebSocket() {
+      const loc = window.location;
+      const wsProtocol = loc.protocol === "https:" ? "wss:" : "ws:";
+      const wsUrl = `${wsProtocol}//${loc.host}/ws?source=browser`;
+
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        document.getElementById("wsBadge").className = "badge badge-connected";
+        document.getElementById("wsStatusText").innerText = "Online";
+        console.log("[WebSocket] Connected to Mission Control Server.");
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          latestState = data;
+          updateDashboard(data);
+          drawMap(data);
+        } catch (err) {
+          console.error("[WS Message Error]:", err);
+        }
+      };
+
+      ws.onclose = () => {
+        document.getElementById("wsBadge").className = "badge badge-disconnected";
+        document.getElementById("wsStatusText").innerText = "Offline";
+        setTimeout(initWebSocket, 2000);
+      };
+
+      ws.onerror = (err) => {
+        ws.close();
+      };
+    }
+
+    function sendCommand(msg) {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(msg));
+      } else {
+        console.warn("[WS] Socket not open to send command:", msg);
+      }
+    }
+
+    // Teleoperation & Control helpers
+    function teleop(action, val = 1.0) {
+      sendCommand({ type: "teleop", action: action, val: val });
+    }
+
+    function sendControl(command) {
+      sendCommand({ type: "control", command: command });
+    }
+
+    function startAutoScan() {
+      sendCommand({ type: "dispatch_area", area_id: "A", pattern: "zigzag" });
+    }
+
+    function setManualMode() {
+      teleop("stop");
+    }
+
+    function dispatchArea(areaId) {
+      sendCommand({ type: "dispatch_area", area_id: areaId, pattern: "zigzag" });
+    }
+
+    function submitCustomTarget() {
+      const x = parseFloat(document.getElementById("targetX").value);
+      const y = parseFloat(document.getElementById("targetY").value);
+      if (!isNaN(x) && !isNaN(y)) {
+        sendCommand({ type: "set_custom_target", x: x, y: y, auto_scan: true });
+      }
+    }
+
+    function updateSettings() {
+      const speed = parseFloat(document.getElementById("sldSpeed").value);
+      const turn = parseFloat(document.getElementById("sldTurn").value);
+      const step = parseFloat(document.getElementById("sldStep").value);
+      const shift = parseFloat(document.getElementById("sldShift").value);
+
+      document.getElementById("lblSpeed").innerText = speed.toFixed(1);
+      document.getElementById("lblTurnSpeed").innerText = turn.toFixed(0);
+      document.getElementById("lblStep").innerText = step.toFixed(2);
+      document.getElementById("lblShift").innerText = shift.toFixed(2);
+
+      sendCommand({
+        type: "update_settings",
+        settings: {
+          forward_speed: speed,
+          turn_speed: turn,
+          step_distance: step,
+          lane_shift: shift
+        }
+      });
+    }
+
+    // ============================================================
+    // DASHBOARD TELEMETRY UPDATES
+    // ============================================================
+    let lastRenderedAreas = null;
+
+    function updateDashboard(data) {
+      if (!data) return;
+
+      // Source Bridge Badge
+      const isIsaac = data.is_isaac_sim;
+      const bridgeBadge = document.getElementById("bridgeBadge");
+      const bridgeText = document.getElementById("bridgeText");
+      if (isIsaac) {
+        bridgeBadge.className = "badge badge-bridge";
+        bridgeText.innerText = "Isaac Sim Live";
+      } else {
+        bridgeBadge.className = "badge badge-sim";
+        bridgeText.innerText = "Digital Twin";
+      }
+
+      // Robot Pose
+      if (data.robot) {
+        document.getElementById("lblPose").innerText = 
+          `X: ${data.robot.x.toFixed(2)} | Y: ${data.robot.y.toFixed(2)} | YAW: ${data.robot.yaw.toFixed(1)}°`;
+        document.getElementById("diagState").innerText = data.robot.state || "MOVING";
+        document.getElementById("diagPhase").innerText = data.robot.sub_phase || "IDLE";
+
+        const isManual = data.robot.state === "MANUAL" || data.robot.state === "USER_PAUSED" || data.robot.state === "STOPPED";
+        document.getElementById("btnManualMode").className = isManual ? "btn btn-primary" : "btn";
+        document.getElementById("btnAutoScan").className = !isManual ? "btn btn-primary" : "btn";
+      }
+
+      // Camera Frame
+      if (data.camera_frame && data.camera_frame.length > 50) {
+        const img = document.getElementById("cameraImg");
+        const placeholder = document.getElementById("cameraPlaceholder");
+        img.src = "data:image/jpeg;base64," + data.camera_frame;
+        img.style.display = "block";
+        placeholder.style.display = "none";
+      }
+
+      // Proximity Sensors
+      if (data.sensors) {
+        const left = data.sensors.left_dist;
+        const center = data.sensors.center_dist;
+        const right = data.sensors.right_dist;
+        const closest = data.sensors.closest_dist;
+
+        document.getElementById("valDepthLeft").innerText = left < 20 ? left.toFixed(2) + " m" : "CLEAR";
+        document.getElementById("valDepthCenter").innerText = center < 20 ? center.toFixed(2) + " m" : "CLEAR";
+        document.getElementById("valDepthRight").innerText = right < 20 ? right.toFixed(2) + " m" : "CLEAR";
+        document.getElementById("valClosestDist").innerText = closest < 20 ? closest.toFixed(2) + " m" : "CLEAR";
+
+        const meter = document.getElementById("meterObstacle");
+        if (closest < 20) {
+          const pct = Math.max(0, Math.min(100, (1.0 - (closest / 3.0)) * 100));
+          meter.style.width = pct + "%";
+          meter.style.background = closest < 0.5 ? "var(--danger)" : (closest < 1.0 ? "var(--warning)" : "var(--success)");
+        } else {
+          meter.style.width = "0%";
+        }
+      }
+
+      // Stress & Cortisol
+      if (data.stress) {
+        const lvl = data.stress.level || 0.0;
+        const band = data.stress.band || "LOW";
+        const pot = data.stress.potential || 0.0;
+
+        document.getElementById("valStress").innerText = lvl.toFixed(1);
+        document.getElementById("valPotential").innerText = pot.toFixed(2);
+        
+        const badge = document.getElementById("badgeStressBand");
+        badge.innerText = band;
+        const meter = document.getElementById("meterStress");
+        meter.style.width = Math.min(100, (lvl / 10.0) * 100) + "%";
+
+        if (band === "HIGH") {
+          badge.style.background = "var(--danger)";
+          meter.style.background = "var(--danger)";
+        } else if (band === "MEDIUM") {
+          badge.style.background = "var(--warning)";
+          meter.style.background = "var(--warning)";
+        } else {
+          badge.style.background = "var(--success)";
+          meter.style.background = "var(--success)";
+        }
+      }
+
+      // VLM Reasoning
+      if (data.vlm) {
+        document.getElementById("vlmCategory").innerText = data.vlm.category || "CLEAR";
+        document.getElementById("vlmRisk").innerText = (data.vlm.risk_score || 0) + " / 10";
+        document.getElementById("vlmAction").innerText = data.vlm.command || "PROCEED";
+        document.getElementById("vlmReasoning").innerText = data.vlm.reasoning || "Path is clear.";
+      }
+
+      // Battery & Diagnostics
+      if (data.battery) {
+        document.getElementById("diagBattery").innerText = data.battery.percentage.toFixed(0) + "%";
+      }
+      if (data.diagnostics) {
+        document.getElementById("diagLatency").innerText = (data.diagnostics.link_latency_ms || 12) + " ms";
+      }
+
+      // Areas list rendering
+      if (data.areas && JSON.stringify(data.areas) !== lastRenderedAreas) {
+        lastRenderedAreas = JSON.stringify(data.areas);
+        const container = document.getElementById("areasContainer");
+        container.innerHTML = "";
+        data.areas.forEach(a => {
+          const card = document.createElement("div");
+          card.className = "area-card";
+          card.onclick = () => dispatchArea(a.id);
+          card.innerHTML = `
+            <div class="area-card-title">
+              <div class="area-dot" style="background:${a.color || '#06b6d4'};"></div>
+              ${a.name}
+            </div>
+            <div class="area-desc">${a.description || ''} (${a.x.toFixed(1)}, ${a.y.toFixed(1)})</div>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      // Track Name
+      if (data.terrain && data.terrain.name) {
+        document.getElementById("mapTrackName").innerText = data.terrain.name;
+      }
+    }
+
+    // ============================================================
+    // CANVAS MAP RENDERING
+    // ============================================================
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function drawMap(data) {
+      if (!ctx || !data || !data.terrain) return;
+
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const t = data.terrain;
+      const minX = t.min_x;
+      const maxX = t.max_x;
+      const minY = t.min_y;
+      const maxY = t.max_y;
+
+      const trackW = Math.max(1, maxX - minX);
+      const trackH = Math.max(1, maxY - minY);
+
+      // Fit map maintaining aspect ratio with margin
+      const margin = 40;
+      const scaleX = (w - margin * 2) / trackW;
+      const scaleY = (h - margin * 2) / trackH;
+      const scale = Math.min(scaleX, scaleY);
+
+      const offsetX = margin + (w - margin * 2 - trackW * scale) / 2;
+      const offsetY = margin + (h - margin * 2 - trackH * scale) / 2;
+
+      // Coordinate Transform: Isaac Sim (X, Y) -> Canvas (px, py)
+      function toCanvas(x, y) {
+        const cx = offsetX + (x - minX) * scale;
+        // Invert Y so positive Y is up
+        const cy = offsetY + (maxY - y) * scale;
+        return [cx, cy];
+      }
+
+      function fromCanvas(cx, cy) {
+        const x = minX + (cx - offsetX) / scale;
+        const y = maxY - (cy - offsetY) / scale;
+        return [x, y];
+      }
+
+      canvas._fromCanvas = fromCanvas;
+
+      // 1. Draw Grid lines
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.lineWidth = 1;
+      const step = 2.0;
+      for (let gx = Math.ceil(minX); gx <= maxX; gx += step) {
+        const [p1x, p1y] = toCanvas(gx, minY);
+        const [p2x, p2y] = toCanvas(gx, maxY);
+        ctx.beginPath();
+        ctx.moveTo(p1x, p1y);
+        ctx.lineTo(p2x, p2y);
+        ctx.stroke();
+      }
+      for (let gy = Math.ceil(minY); gy <= maxY; gy += step) {
+        const [p1x, p1y] = toCanvas(minX, gy);
+        const [p2x, p2y] = toCanvas(maxX, gy);
+        ctx.beginPath();
+        ctx.moveTo(p1x, p1y);
+        ctx.lineTo(p2x, p2y);
+        ctx.stroke();
+      }
+
+      // 2. Draw Road / NavMesh Bounds
+      const [tlX, tlY] = toCanvas(minX, maxY);
+      const [brX, brY] = toCanvas(maxX, minY);
+      ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
+      ctx.fillRect(tlX, tlY, brX - tlX, brY - tlY);
+      ctx.strokeStyle = "#0284c7";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(tlX, tlY, brX - tlX, brY - tlY);
+
+      // Safety margin border
+      const sm = t.safety_margin || 0.35;
+      const [smTlX, smTlY] = toCanvas(minX + sm, maxY - sm);
+      const [smBrX, smBrY] = toCanvas(maxX - sm, minY + sm);
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.25)";
+      ctx.setLineDash([4, 4]);
+      ctx.strokeRect(smTlX, smTlY, smBrX - smTlX, smBrY - smTlY);
+      ctx.setLineDash([]);
+
+      // 3. Draw Pre-defined Mission Areas
+      if (data.areas) {
+        data.areas.forEach(a => {
+          const [acx, acy] = toCanvas(a.x, a.y);
+          const rad = (a.radius || 1.2) * scale;
+          ctx.beginPath();
+          ctx.arc(acx, acy, rad, 0, Math.PI * 2);
+          ctx.fillStyle = (a.color || "#06b6d4") + "22";
+          ctx.fill();
+          ctx.strokeStyle = a.color || "#06b6d4";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Label
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 11px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(a.name, acx, acy - rad - 4);
+        });
+      }
+
+      // 4. Target Destination
+      if (data.mission && data.mission.target_destination) {
+        const [tx, ty] = data.mission.target_destination;
+        const [tcx, tcy] = toCanvas(tx, ty);
+        ctx.beginPath();
+        ctx.arc(tcx, tcy, 8, 0, Math.PI * 2);
+        ctx.fillStyle = "#22c55e";
+        ctx.fill();
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = "#22c55e";
+        ctx.font = "bold 11px monospace";
+        ctx.fillText("TARGET", tcx, tcy + 18);
+      }
+
+      // 5. Breadcrumbs Trail
+      if (data.breadcrumbs && data.breadcrumbs.length > 1) {
+        ctx.beginPath();
+        for (let i = 0; i < data.breadcrumbs.length; i++) {
+          const b = data.breadcrumbs[i];
+          const [bx, by] = toCanvas(b.x, b.y);
+          if (i === 0) ctx.moveTo(bx, by);
+          else ctx.lineTo(bx, by);
+        }
+        ctx.strokeStyle = "rgba(16, 185, 129, 0.5)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // 6. Robot Body & Orientation
+      if (data.robot) {
+        const rx = data.robot.x;
+        const ry = data.robot.y;
+        const yawDeg = data.robot.yaw;
+        const [rcx, rcy] = toCanvas(rx, ry);
+
+        // Robot Body (Hexagon)
+        const robotRad = 16;
+        ctx.save();
+        ctx.translate(rcx, rcy);
+        ctx.rotate(-yawDeg * Math.PI / 180); // Invert rotation for canvas coords
+
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (i * 60) * Math.PI / 180;
+          const hx = robotRad * Math.cos(angle);
+          const hy = robotRad * Math.sin(angle);
+          if (i === 0) ctx.moveTo(hx, hy);
+          else ctx.lineTo(hx, hy);
+        }
+        ctx.closePath();
+        ctx.fillStyle = "#06b6d4";
+        ctx.fill();
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Heading Arrow (Pointing Forward)
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(robotRad + 14, 0);
+        ctx.lineTo(robotRad + 6, -6);
+        ctx.moveTo(robotRad + 14, 0);
+        ctx.lineTo(robotRad + 6, 6);
+        ctx.strokeStyle = "#fbbf24";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    }
+
+    // Canvas Click-to-Target Navigation
+    canvas.addEventListener("click", (e) => {
+      if (!canvas._fromCanvas) return;
+      const rect = canvas.getBoundingClientRect();
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
+      const [worldX, worldY] = canvas._fromCanvas(cx, cy);
+
+      document.getElementById("targetX").value = worldX.toFixed(2);
+      document.getElementById("targetY").value = worldY.toFixed(2);
+
+      sendCommand({
+        type: "set_custom_target",
+        x: worldX,
+        y: worldY,
+        auto_scan: true
+      });
+    });
+
+    // ============================================================
+    // KEYBOARD TELEOPERATION LISTENER
+    // ============================================================
+    const activeKeys = new Set();
+
+    window.addEventListener("keydown", (e) => {
+      if (e.target.tagName === "INPUT" || e.repeat) return;
+      const key = e.key.toLowerCase();
+
+      if (key === "w" || e.key === "ArrowUp") {
+        activeKeys.add("w");
+        document.getElementById("btnFwd").classList.add("active");
+        teleop("forward_step");
+        e.preventDefault();
+      } else if (key === "s" || e.key === "ArrowDown") {
+        activeKeys.add("s");
+        document.getElementById("btnRev").classList.add("active");
+        teleop("reverse_step");
+        e.preventDefault();
+      } else if (key === "a" || e.key === "ArrowLeft") {
+        activeKeys.add("a");
+        document.getElementById("btnLeft").classList.add("active");
+        teleop("turn_left");
+        e.preventDefault();
+      } else if (key === "d" || e.key === "ArrowRight") {
+        activeKeys.add("d");
+        document.getElementById("btnRight").classList.add("active");
+        teleop("turn_right");
+        e.preventDefault();
+      } else if (key === "q") {
+        document.getElementById("btnShiftLeft").classList.add("active");
+        teleop("lane_shift_left");
+      } else if (key === "e") {
+        document.getElementById("btnShiftRight").classList.add("active");
+        teleop("lane_shift_right");
+      } else if (key === " ") {
+        teleop("stop");
+        e.preventDefault();
+      }
+    });
+
+    window.addEventListener("keyup", (e) => {
+      const key = e.key.toLowerCase();
+      activeKeys.delete(key);
+      document.getElementById("btnFwd").classList.remove("active");
+      document.getElementById("btnRev").classList.remove("active");
+      document.getElementById("btnLeft").classList.remove("active");
+      document.getElementById("btnRight").classList.remove("active");
+      document.getElementById("btnShiftLeft").classList.remove("active");
+      document.getElementById("btnShiftRight").classList.remove("active");
+    });
+
+    // Start WebSocket
+    initWebSocket();
+  </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+Memory Miss]: New obstacle at (1.15, -0.39). YOLO not confident -- querying VLM
+directly...
+
+[VLM Dispatch]: in_flight=True | phase=CLASSIFY_OBSTACLE | recheck=False
+| t=1791863572.36
+
+[VLM Query]: Querying mimo-v2.6-flash-free for 'CLASSIFY_OBSTACLE' (waiting
+up to 1s)...
+
+[VLM Server Connection Error (Attempt 1/1)]: [Errno 111] Connection refused
+
+[YOLO Debug] 1 dets | best: cone conf=0.98 hits=45 dist=0.78
+
+[ATTACK SUSPECTED]: 1 track(s) closing. IDs=[13]
+
+[Attack ended]: No closing tracks above threshold.
+
+[ATTACK SUSPECTED]: 1 track(s) closing. IDs=[13]
+
+[Attack ended]: No closing tracks above threshold.
+
+[VLM Max Retries/Timeout Exceeded]: Executing deterministic fallback rule.
+
+[VLM Callback]: Phase='CLASSIFY_OBSTACLE' | Category='STATIC_BAR' |
+Command='standard_bypass' | Reason: Deterministic fallback safety rule post
+timeout.
+
+[Memory] Cached new obstacle: STATIC_BAR (risk=5, stationary=True) at (1.15,
+-0.39)
+
+[Strategy - Standard Bypass]: Obstacle (STATIC_BAR) detected. Executing
+standard bypass...
+
+[Target-First Diverge]: Turning toward target -> LEFT (angle_diff=74.2°,
+depth=infm)
+
+[VLM Dispatch]: in_flight=False | phase=CLASSIFY_OBSTACLE | recheck=False |
+t=1791863573.37
+
+[YOLO Debug] 1 dets | best: cone conf=0.99 hits=60 dist=0.64
+
+Correctly Defines cone[YOLO Debug] 1 dets | best: car conf=0.97 hits=23 dist=0.64
+
+[ATTACK SUSPECTED]: 1 track(s) closing. IDs=[23]
+
+[Attack ended]: No closing tracks above threshold.
+
+[EMERGENCY STOP - Global Guard]: 0.24m while in 'AVOID_DIVERGE_STEP'.
+Backing up.
+
+[Emergency Backup]: Obstacle too close! Backing up 0.3m...
+
+[YOLO Debug] 1 dets | best: car conf=0.98 hits=17 dist=0.27
+
+[YOLO Debug] 1 dets | best: car conf=0.98 hits=60 dist=1.24
+
+[VLM Max Retries/Timeout Exceeded]: Executing deterministic fallback rule.
+
+[VLM Callback]: Phase='CLASSIFY_OBSTACLE' | Category='STATIC_BAR' |
+Command='standard_bypass' | Reason: Deterministic fallback safety rule post
+timeout.
+
+[TRAUMA RECALL]: Known attack site. Instant HIGH-band response.
+
+[Target-First Diverge]: Turning toward target -> RIGHT (angle_diff=-55.6°,
+depth=2.07m)
+
+[High Stress Override]: Skipping incremental diverge, committing to wide evasive
+maneuver.
+
+[VLM Dispatch]: in_flight=False | phase=CLASSIFY_OBSTACLE | recheck=False |
+t=1791863608.52
+
+[YOLO Debug] 1 dets | best: cow conf=0.95 hits=1 dist=2.42
+
+[TRAUMA]: Recorded attack by 'STATIC_BAR' at (4.96, -1.76), v=1.15m/s
+
+[TRAUMA]: Recorded attack by 'STATIC_BAR' at (4.98, -1.76), v=0.00m/s
+
+[Data Collect]: burst of 5 saved ->
+/home/user/Desktop/llmforhexapod/dataset/auto_collect/UNVERIFIED
+
+[TRAUMA]: Recorded attack by 'STATIC_BAR' at (4.99, -1.77), v=0.00m/s
+
+[TRAUMA]: Recorded attack by 'STATIC_BAR' at (5.01, -1.77), v=0.00m/s
+
+Correctly Defines car
+
+[YOLO Debug] 1 dets | best: cow conf=0.98 hits=12 dist=1.63
+
+[TRAUMA]: Recorded attack by 'STATIC_BAR' at (5.02, -1.06), v=0.00m/s
+
+[ATTACK SUSPECTED]: 1 track(s) closing. IDs=[29]
+
+[Attack ended]: No closing tracks above threshold.
+
+[ATTACK SUSPECTED]: 1 track(s) closing. IDs=[30]
+
+[YOLO Debug] 1 dets | best: cow conf=0.97 hits=10 dist=1.33
+
+[Attack ended]: No closing tracks above threshold.
+
+[ATTACK SUSPECTED]: 1 track(s) closing. IDs=[30]
+
+[Attack ended]: No closing tracks above threshold.
+
+[ATTACK SUSPECTED]: 1 track(s) closing. IDs=[28]
+
+[Attack ended]: No closing tracks above threshold.
+
+[Stress Recheck]: Dispatching (FLANK_PRE_CHECK_SETTLE, band=HIGH,
+encounter=3)...
+
+[Flank Pre-Check Passed]: Corridor clear. Driving flank...
+
+[VLM Query]: Querying mimo-v2.6-flash-free for 'STRESS_RECHECK' (waiting up
+to 1s)...
+
+[VLM Server Connection Error (Attempt 1/1)]: [Errno 111] Connection refused
+
+Correctly defines cow

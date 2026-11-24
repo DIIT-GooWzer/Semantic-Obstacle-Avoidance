@@ -1,0 +1,62 @@
+
+"content": "{\n  \"category\": \"CLEAR\",\n  \"obstacle_class\": \"None\",\n
+\"risk_score\": 0,\n  \"currently_stationary\": true,\n  \"command\":
+\"resume_path\",\n  \"reasoning\": \"The image shows a clear open field with no
+obstacles blocking forward progress. The person on the left is partially visible
+but not obstructing the path ahead. The colored blocks are static and
+positioned to the side, not impeding movement. No biological or dynamic elements
+present that would require caution.\",\n  \"center_blocked\": false,\n
+\"left_sector_coverage_pct\": 0,\n  \"right_sector_coverage_pct\": 0\n}",
+
+"content": "{\n  \"category\": \"BIOLOGICAL\",\n  \"obstacle_class\":
+\"Cow/Animal\",\n  \"risk_score\": 6,\n  \"currently_stationary\": false,\n
+\"command\": \"yield_and_wait\",\n  \"reasoning\": \"The image shows a human
+figure (biological entity) standing directly in the center of the robot's path.
+Although humans are not explicitly listed as 'animals' in the prompt, they fall
+under the biological category and require avoidance similar to livestock due to
+unpredictable movement capabilities. The presence of this person blocks forward
+progress entirely. Risk score is 6 because while currently stationary or slow-
+moving, a human can suddenly move toward the robot or change direction
+unpredictably.\",\n  \"center_blocked\": true,\n  \"left_sector_coverage_pct\":
+20,\n  \"right_sector_coverage_pct\": 15\n}",
+
+"content": "{\n  \"category\": \"STATIC_BAR\",\n  \"obstacle_class\":
+\"Vehicle\",\n  \"risk_score\": 3,\n  \"currently_stationary\": true,\n
+\"command\": \"standard_bypass\",\n  \"reasoning\": \"The image shows a close-
+up of the side panel of a vehicle (likely an agricultural or construction machine)
+with the number '08' stenciled on it. The surface is solid, metallic, and clearly
+part of a large static object — not terrain, sky, or biological entity. Since this is
+a 3D-rendered asset resembling a vehicle body, it qualifies as STATIC_BAR per
+rules. Risk score 3: predictable obstacle requiring deliberate avoidance but no
+unpredictability. Stationary because there are no motion cues (no wheels turning,
+no engine indicators). Center slice contains the full width of the vehicle panel —
+thus center_blocked = true. Left and right sectors show minimal to no additional
+obstruction beyond the main body.\",\n  \"center_blocked\": true,\n
+\"left_sector_coverage_pct\": 10,\n  \"right_sector_coverage_pct\": 5\n}",
+
+"content": "{\n  \"category\": \"STATIC_BAR\",\n  \"obstacle_class\":
+\"Vehicle\",\n  \"risk_score\": 3,\n  \"currently_stationary\": true,\n
+\"command\": \"standard_bypass\",\n  \"reasoning\": \"The image shows a
+stationary vehicle (appears to be an old police car or similar) directly in the
+forward path. It is clearly a solid object with defined edges and no signs of
+motion. The risk score is low because it's parked and predictable, but still
+requires deliberate avoidance. The center slice is blocked by the vehicle.\",\n
+\"center_blocked\": true,\n  \"left_sector_coverage_pct\": 0,\n
+\"right_sector_coverage_pct\": 100\n}",
+
+"content": "{\n  \"category\": \"STATIC_BAR\",\n  \"obstacle_class\": \"Traffic
+Cone\",\n  \"risk_score\": 3,\n  \"currently_stationary\": true,\n  \"command\":
+\"standard_bypass\",\n  \"reasoning\": \"The image clearly shows a traffic cone
+in the foreground on the left side. It is a static barrier with no motion
+capability. The risk score is low (3) as it's a predictable obstacle that requires
+deliberate avoidance but poses minimal unpredictability. The center of the image
+is clear, and the right sector has some colored blocks but they are not
+obstructing the path significantly.\",\n  \"center_blocked\": false,\n
+\"left_sector_coverage_pct\": 80,\n  \"right_sector_coverage_pct\": 20\n}",
+
+"content": "{\n  \"obstacle_visible\": false,\n  \"trend\": \"stationary\",\n
+\"command\": \"continue\",\n  \"reasoning\": \"The current image shows an open
+field with no visible obstacles. Since the previously classified obstacle (traffic
+cone) is not present in this view and the path ahead is clear, there is no
+indication of motion or reappearance. The robot can safely continue its
+avoidance maneuver as planned.\"\n}",

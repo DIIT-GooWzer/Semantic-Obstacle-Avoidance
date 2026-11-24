@@ -1,0 +1,30 @@
+ROBOT_PATH         = "/World/phantomX_base"
+SPAWN_POSITION     = (0.3295789538104168, -1.681203353653679, 0.10692057425096305)
+SPAWN_ROTATION     = (0.0, 0.0, 90.0)
+TARGET_DESTINATION = (-10.2, 2.0)                     # Supports positive or negative X targets
+TARGET_RADIUS      = 0.3
+
+STEP_DISTANCE      = 0.5                             # Sweep pause step size (m)
+PAUSE_DURATION     = 0.5                             # Sweep pause duration (s)
+FORWARD_SPEED      = 1.0                             # Base speed (m/s)
+TURN_SPEED         = 180.0                           # Turn speed (deg/s)
+LANE_SHIFT         = 0.5                             # Lane shift width (m)
+OBSTACLE_THRESHOLD = 1.3                             # Avoidance trigger threshold (m)
+PRINT_INTERVAL     = 2.0                             # Telemetry print interval (s)
+
+# Avoidance micro-step settings
+AVOIDANCE_STEP_SIZE   = 0.25                         # Micro-step distance per VLM query (m)
+DIVERGE_ANGLE_INC     = 30.0                         # Heading deflection angle (deg)
+
+# VLM API Configuration (Ollama / Local / OpenAI endpoint compatible)
+VLM_API_URL        = "https://openrouter.ai/api/v1/chat/completions"
+VLM_API_KEY        = "sk-or-v1-xxxx"                                    # Set key if using cloud APIs
+VLM_MODEL          = "dots-studio/dots-3-note-preview:free"                           # e.g., gpt-4o, llama3.2-vision, qwen2-vl
+
+RGB_TOPICS   = ["/rgb", "/camera/rgb", "/phantomx/camera/rgb"]
+DEPTH_TOPICS = ["/depth", "/camera/depth", "/phantomx/camera/depth"]
+
+
+ANOTHER USER:
+VLM_API_KEY        = "sk-or-v1-xxxx"                                    # Set key if using cloud APIs
+VLM_MODEL          = "dots-studio/dots-3-note-preview:free" 

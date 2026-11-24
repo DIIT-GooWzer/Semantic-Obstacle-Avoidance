@@ -1,0 +1,18 @@
+I want you refer to this directory ~/Desktop/llmhexapod/Scripts/Experimental_Scripts
+in that directory has 2 scritps which are the files that i just copied and pasted from what we have done but i just renamed the filename
+
+2 options maybe, unless you suggest something better
+
+1. is to create 2 new scripts for the 2nd scenario which is making a biological model move across the lane from A to B
+2. is to somehow running 2 scripts in 1 go? idk
+
+the primpath for that model is /Rugged_Winter_Traveler
+
+and we need it to move from 
+(1.8807980725731495, 0.33112147104726, 0.4820345021416584)
+to
+(-1.5034274817465252, -0.5971399678209076, 0.4820345021416566)
+and they should intersect the lane within 3 hexapod robot steps,
+and the movement for the biological obstacle should be slow
+
+do you have any better suggestion

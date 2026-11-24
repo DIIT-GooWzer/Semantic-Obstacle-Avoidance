@@ -1,0 +1,35 @@
+perform_full_reset({
+    "scenario_id": "stationary_human_center",
+    "scenario_config_id": "stationary_human_center_v1",
+    "scenario_instance_id": "human_center_repeat01",   # ← identical
+    "expected_initial_command": "yield_and_wait",
+})
+
+
+reset_crossing_trial({
+    "scenario_id": "crossing_human",
+    "scenario_config_id": "crossing_human_v1",
+    "scenario_instance_id": "crossing_human_repeat01",
+    "expected_initial_command": "yield_and_wait",
+})
+
+reset_approach_trial({
+    "scenario_id": "approach_stop_leave",
+    "scenario_config_id": "approach_stop_leave_v1",
+    "scenario_instance_id": "approach_stop_leave_repeat01",
+    "expected_initial_command": "yield_and_wait",
+})
+
+reset_walkaway_trial({
+    "scenario_id": "human_walkaway",
+    "scenario_config_id": "human_walkaway_v1",
+    "scenario_instance_id": "human_walkaway_repeat01",
+    "expected_initial_command": "yield_and_wait",
+})
+
+perform_full_reset({
+    "scenario_id": "human_statue_center",
+    "scenario_config_id": "human_statue_center_v1",
+    "scenario_instance_id": "human_statue_repeat01",   
+    "expected_initial_command": "standard_bypass",
+})

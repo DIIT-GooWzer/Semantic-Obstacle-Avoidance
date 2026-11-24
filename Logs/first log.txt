@@ -1,0 +1,156 @@
+[2026-08-26 12:21:07] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: DIVERGE_SCAN
+            Pose: (0.83, -0.59) | Heading: 60.0° | Obstacle: 3.22m
+            Sectors: Left: infm, Ctr: 3.22m, Right: 3.22m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:09] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: DIVERGE_SCAN
+            Pose: (0.83, -0.59) | Heading: 60.0° | Obstacle: 3.22m
+            Sectors: Left: infm, Ctr: 3.22m, Right: 3.22m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:11] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: DIVERGE_SCAN
+            Pose: (0.83, -0.59) | Heading: 60.0° | Obstacle: 3.22m
+            Sectors: Left: infm, Ctr: 3.22m, Right: 3.22m
+-----------------------------------------------------------------
+[VLM Fallback Triggered (timed out)]
+
+[VLM Callback]: Phase='DIVERGE_SCAN' | Category='STATIC_BAR' | Command='return_to_lane' | Reason: Deterministic fallback safety rule.
+[Multi-Obstacle Resolution]: Open corridor detected between obstacles. Re-aligning to drive forward.
+[Flank Pre-Check]: Fresh frame captured at Heading: 90.0 deg. Dispatching VLM query...
+-----------------------------------------------------------------
+[2026-08-26 12:21:13] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: FLANK_PRE_CHECK
+            Pose: (0.83, -0.59) | Heading: 90.0° | Obstacle: 0.46m
+            Sectors: Left: 0.46m, Ctr: infm, Right: infm
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:15] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: FLANK_PRE_CHECK
+            Pose: (0.83, -0.59) | Heading: 90.0° | Obstacle: 0.46m
+            Sectors: Left: 0.46m, Ctr: infm, Right: infm
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:17] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: FLANK_PRE_CHECK
+            Pose: (0.83, -0.59) | Heading: 90.0° | Obstacle: 0.46m
+            Sectors: Left: 0.46m, Ctr: infm, Right: infm
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:19] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: FLANK_PRE_CHECK
+            Pose: (0.83, -0.59) | Heading: 90.0° | Obstacle: 0.46m
+            Sectors: Left: 0.46m, Ctr: infm, Right: infm
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:21] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: FLANK_PRE_CHECK
+            Pose: (0.83, -0.59) | Heading: 90.0° | Obstacle: 0.46m
+            Sectors: Left: 0.46m, Ctr: infm, Right: infm
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:23] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: FLANK_PRE_CHECK
+            Pose: (0.83, -0.59) | Heading: 90.0° | Obstacle: 0.46m
+            Sectors: Left: 0.46m, Ctr: infm, Right: infm
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:25] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: FLANK_PRE_CHECK
+            Pose: (0.83, -0.59) | Heading: 90.0° | Obstacle: 0.46m
+            Sectors: Left: 0.46m, Ctr: infm, Right: infm
+-----------------------------------------------------------------
+[VLM Fallback Triggered (timed out)]
+
+[VLM Callback]: Phase='FLANK_PRE_CHECK' | Category='STATIC_BAR' | Command='diverge_more' | Reason: Deterministic fallback safety rule.
+[Sector Check]: Left sector 0% covered (Depth: 0.46m) >= 40% threshold.
+[Flank Check Failed]: Obstacle intrusion (Ctr=False, Left=0%, Right=0%). Diverging further...
+-----------------------------------------------------------------
+[2026-08-26 12:21:27] [Telemetry] State: AVOID_DIVERGE_STEP | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (1.21, -0.41) | Heading: 25.0° | Obstacle: 1.11m
+            Sectors: Left: 3.22m, Ctr: 1.21m, Right: 1.11m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:29] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (1.52, -0.27) | Heading: 25.0° | Obstacle: 0.69m
+            Sectors: Left: 3.22m, Ctr: 0.75m, Right: 0.69m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:31] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (1.52, -0.27) | Heading: 25.0° | Obstacle: 0.69m
+            Sectors: Left: 3.22m, Ctr: 0.75m, Right: 0.69m
+-----------------------------------------------------------------
+[VLM Fallback Triggered (timed out)]
+
+[VLM Callback]: Phase='WIDE_OBSTACLE_DIVERGE' | Category='STATIC_BAR' | Command='diverge_more' | Reason: Deterministic fallback safety rule.
+-----------------------------------------------------------------
+[2026-08-26 12:21:33] [Telemetry] State: AVOID_DIVERGE_STEP | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (1.78, -0.20) | Heading: 15.0° | Obstacle: 0.65m
+            Sectors: Left: 0.67m, Ctr: 0.66m, Right: 0.65m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:35] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.01, -0.13) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.30m, Ctr: 0.29m, Right: 0.29m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:37] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.01, -0.13) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.30m, Ctr: 0.29m, Right: 0.29m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:39] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.01, -0.13) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.30m, Ctr: 0.29m, Right: 0.29m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:41] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.01, -0.13) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.30m, Ctr: 0.29m, Right: 0.29m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:43] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.01, -0.13) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.30m, Ctr: 0.29m, Right: 0.29m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:45] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.01, -0.13) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.30m, Ctr: 0.29m, Right: 0.29m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:47] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.01, -0.13) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.30m, Ctr: 0.29m, Right: 0.29m
+-----------------------------------------------------------------
+[VLM Fallback Triggered (timed out)]
+
+[VLM Callback]: Phase='WIDE_OBSTACLE_DIVERGE' | Category='STATIC_BAR' | Command='diverge_more' | Reason: Deterministic fallback safety rule.
+-----------------------------------------------------------------
+[2026-08-26 12:21:49] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.49, -0.01) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.33m, Ctr: 0.30m, Right: 0.29m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:51] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.49, -0.01) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.33m, Ctr: 0.30m, Right: 0.29m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:53] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.49, -0.01) | Heading: 15.0° | Obstacle: 0.29m
+            Sectors: Left: 0.33m, Ctr: 0.30m, Right: 0.29m
+-----------------------------------------------------------------
+[VLM Fallback Triggered (timed out)]
+
+[VLM Callback]: Phase='WIDE_OBSTACLE_DIVERGE' | Category='STATIC_BAR' | Command='diverge_more' | Reason: Deterministic fallback safety rule.
+-----------------------------------------------------------------
+[2026-08-26 12:21:55] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.98, 0.12) | Heading: 15.0° | Obstacle: 0.20m
+            Sectors: Left: 0.20m, Ctr: 0.50m, Right: 0.66m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:57] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.98, 0.12) | Heading: 15.0° | Obstacle: 0.20m
+            Sectors: Left: 0.20m, Ctr: 0.50m, Right: 0.66m
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+[2026-08-26 12:21:59] [Telemetry] State: VLM_INSPECTING | Cat: STATIC_BAR | Phase: WIDE_OBSTACLE_DIVERGE
+            Pose: (2.98, 0.12) | Heading: 15.0° | Obstacle: 0.20m
+            Sectors: Left: 0.20m, Ctr: 0.50m, Right: 0.66m
+-----------------------------------------------------------------
+[PhantomX]: All robot operations and VLM threads halted.
+
+
