@@ -1,0 +1,17 @@
+Title: Tiger
+URL: http://sketchfab.com/3d-models/tiger-1ec8e57c13a345bf91fe8209de979637
+Author: https://sketchfab.com/Vavtrudner
+
+Vertices: 9944
+Polygons: 19868
+Animations: 0
+
+Download Date: 14/09/2026
+Download Format: GLTF
+Download Path: Z:\home\user\Downloads\3d_Ripper_Pro_v109\Downloads\Vavtrudner\01- Tiger\
+Download File: 1ec8e57c13a345bf91fe8209de979637_Textured.gltf
+
+Textures: 3
+#1: 06509ba941d54588a58d65bf38218b93_RGB_tiger+3d+model_basecolor_1.jpeg
+#2: 6df7c1dc2c84413e82d155480ed704dc_R_tiger+3d+model_rm_2@channels=G.png
+#3: d09903b2317f4714bc04985b7733efbd_R_tiger+3d+model_rm_2@channels=B.png
