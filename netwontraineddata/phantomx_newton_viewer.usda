@@ -1,0 +1,745 @@
+#usda 1.0
+(
+    customLayerData = {
+        dictionary cameraSettings = {
+            dictionary Front = {
+                double3 position = (5, 0, 0)
+                double radius = 3.8462390899658203
+            }
+            dictionary Perspective = {
+                double3 position = (1.880798704492435, 0.18170132254052124, 0.906734844708267)
+                double3 target = (-2.0137109060710614, -0.39772303507530277, -0.9242560412338525)
+            }
+            dictionary Right = {
+                double3 position = (0, -5, 0)
+                double radius = 5
+            }
+            dictionary Top = {
+                double3 position = (0, 0, 5)
+                double radius = 5
+            }
+            string boundCamera = "/OmniverseKit_Persp"
+        }
+        dictionary omni_layer = {
+            string authoring_layer = "./phantomx_newton_viewer.usda"
+        }
+        dictionary renderSettings = {
+        }
+    }
+    defaultPrim = "World"
+    subLayers = [
+        @phantomx_newton.usda@
+    ]
+)
+
+over "World"
+{
+    def Scope "Looks"
+    {
+        def Material "PhantomXGray"
+        {
+            token outputs:surface.connect = </World/Looks/PhantomXGray/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.7, 0.7, 0.7)
+                float inputs:metallic = 0.05
+                float inputs:roughness = 0.62
+                token outputs:surface
+            }
+        }
+
+        def Material "FootRubber"
+        {
+            token outputs:surface.connect = </World/Looks/FootRubber/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.16, 0.17, 0.18)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.82
+                token outputs:surface
+            }
+        }
+    }
+
+    over "PhantomX"
+    {
+        over "Links"
+        {
+            over "body_link"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/body_link/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "body" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "coxa_LF"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/coxa_LF/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9999999777763808, 7.46750554725395e-8, 0, 0), (-7.46750554725395e-8, 0.9999999777763808, 0, 0), (0, 0, 1, 0), (0, 1.3877787807814457e-17, 0, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "coxa" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "femur_LF"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/femur_LF/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.4953697173865038, -5.025824900211292e-8, -0.868682227354566, 0), (-0.8686821928113012, -3.312199557539049e-8, -0.4953697173865043, 0), (-1.4827292708606368e-8, 0.9999999654567338, -1.8754818298621085e-8, 0), (-9.15305300996927e-9, 1.0536712863329356e-8, -5.2195677502364646e-9, 0.9999999999999998) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "femur" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "tibia_LF"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/tibia_LF/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9998400147709219, 4.9058213142157546e-8, 0.017880517852165406, 0), (-0.017880551222914296, -4.724468729835693e-8, 0.9998400147709207, 0), (1.3189979880141683e-7, -0.9999999666292356, -1.2691120187972236e-7, 0), (-0.03234650685973429, 2.1792460495884125e-8, 0.007958519771333106, 1.0000000000000002) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "tibia" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+
+                def Capsule "viewer_foot_connector" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.016
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.006
+                    double3 xformOp:translate = (0.12, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "viewer_foot" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            over "coxa_LM"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/coxa_LM/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9999998656411475, -1.0013028320065602e-7, 0, 0), (1.0013028320065602e-7, 0.9999998656411475, 0, 0), (0, 0, 1, 0), (0, 1.6543612251060553e-24, 0, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "coxa" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "femur_LM"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/femur_LM/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.495369717516442, -5.1984413563255205e-8, -0.8686822292452748, 0), (-0.8686821243046282, 9.116005569949478e-8, -0.4953697175164421, 0), (9.116005579811741e-8, 0.9999998950593536, 5.198441363531041e-8, 0), (9.159339953157541e-16, 1.0086101117234986e-8, 5.273559366969494e-16, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "femur" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "tibia_LM"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/tibia_LM/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9998399411905978, 1.7278313679067136e-8, 0.01788055450303562, 0), (-0.017880740070254298, -8.41046895012485e-8, 0.9998399411905993, 0), (2.0766472611668383e-7, -0.9999998144327397, -2.69319904914507e-7, 0), (-0.03234650266480267, 2.2925625841048927e-8, 0.00795855058879591, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "tibia" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+
+                def Capsule "viewer_foot_connector" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.016
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.006
+                    double3 xformOp:translate = (0.12, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "viewer_foot" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            over "coxa_LR"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/coxa_LR/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9999998704712989, -2.056587722343295e-8, 0, 0), (2.056587722343295e-8, 0.9999998704712989, 0, 0), (0, 0, 1, 0), (2.7755575615628914e-17, -6.938893903907228e-18, 0, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "coxa" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "femur_LR"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/femur_LR/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.4953696881196609, -5.263232769384754e-8, -0.8686822440441089, 0), (-0.868682042711269, 9.397894574402148e-8, -0.4953696881196655, 0), (9.675908603961498e-8, 0.9999997986671602, 4.2144812588095496e-8, 0), (-4.5765261025287884e-9, 5.268355231236033e-9, -2.609783666951415e-9, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "femur" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "tibia_LR"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/tibia_LR/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.999840032877832, 3.0924602714900896e-8, 0.017880431691549785, 0), (-0.017880598411741767, -5.729439359445651e-8, 0.9998400328778395, 0), (1.0223667978410004e-7, -0.9999998332797955, -1.2577902857716513e-7, 0), (-0.03234650740433656, 1.3079570530816209e-8, 0.00795853579417885, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "tibia" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+
+                def Capsule "viewer_foot_connector" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.016
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.006
+                    double3 xformOp:translate = (0.12, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "viewer_foot" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            over "coxa_RF"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/coxa_RF/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9999999777763808, -7.46750554725395e-8, 0, 0), (7.46750554725395e-8, 0.9999999777763808, 0, 0), (0, 0, 1, 0), (0, -1.3877787807814457e-17, 0, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "coxa" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "femur_RF"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/femur_RF/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.4953697026297522, -6.86543561892265e-8, -0.8686822357696591, 0), (-0.8686822012264013, -3.894991452504705e-8, -0.49536970262974983, 0), (1.112541040003512e-8, 0.9999999654567324, -1.202446952958754e-7, 0), (-9.15305300996927e-9, -1.0536712863329356e-8, -5.2195677502364646e-9, 0.9999999999999998) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "femur" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "tibia_RF"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/tibia_RF/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.999840014755078, 4.838642837708501e-8, 0.017880518738566893, 0), (-0.017880552109335583, -1.7678663905570374e-7, 0.9998400147550727, 0), (-3.04649393302703e-8, -0.9999999666292212, -9.534192931933506e-8, 0), (-0.032346506671331196, -1.1255749200744791e-8, 0.007958509236305367, 1.0000000000000002) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "tibia" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+
+                def Capsule "viewer_foot_connector" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.016
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.006
+                    double3 xformOp:translate = (0.12, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "viewer_foot" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            over "coxa_RM"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/coxa_RM/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9999998656411475, 1.0013028320065602e-7, 0, 0), (-1.0013028320065602e-7, 0.9999998656411475, 0, 0), (0, 0, 1, 0), (0, -1.6543612251060553e-24, 0, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "coxa" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "femur_RM"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/femur_RM/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.49536971751645026, -1.5083149098471237e-7, -0.8686822292452464, 0), (-0.8686821243046279, -9.116005561289915e-8, -0.4953697175164418, 0), (9.308812384132632e-9, 0.9999998950593436, -2.2816700455602427e-7, 0), (9.159339953157541e-16, -1.0086101117234986e-8, 5.273559366969494e-16, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "femur" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "tibia_RM"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/tibia_RM/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9998399411906193, 1.8553757274018267e-7, 0.017880554502994014, 0), (-0.017880740070268266, -9.07408365233506e-8, 0.9998399411906317, 0), (-1.754896109303561e-9, -0.999999814432722, 9.81287932082993e-8, 0), (-0.03234650213191509, -2.2925625742162433e-8, 0.007958520791243623, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "tibia" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+
+                def Capsule "viewer_foot_connector" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.016
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.006
+                    double3 xformOp:translate = (0.12, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "viewer_foot" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            over "coxa_RR"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/coxa_RR/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9999998704712989, 2.056587722343295e-8, 0, 0), (-2.056587722343295e-8, 0.9999998704712989, 0, 0), (0, 0, 1, 0), (2.7755575615628914e-17, 6.938893903907228e-18, 0, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "coxa" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "femur_RR"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/femur_RR/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.4953696995797349, -3.971501312641032e-8, -0.8686822375089485, 0), (-0.8686820361761176, -3.800800794823282e-8, -0.4953696995797413, 0), (-2.3920444133046775e-9, 0.9999997986671644, -9.463901278339206e-8, 0), (-4.5765261025287884e-9, -5.268355231236033e-9, -2.609783666951415e-9, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "femur" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+            }
+
+            over "tibia_RR"
+            {
+                def Xform "detailed_visual" (
+                    instanceable = false
+                    prepend references = @../../usd_to_stl_conversion/phantomX_base.usd@</phantomX/tibia_RR/visuals>
+                )
+                {
+                    matrix4d xformOp:transform = ( (0.9998400334016211, 8.289070066171082e-8, 0.017880402402773894, 0), (-0.017880569122979053, -3.869406045681098e-8, 0.9998400334016263, 0), (1.3276766171005775e-8, -0.9999998332797937, 3.1840978152058084e-8, 0), (-0.03234650721593424, -2.3616280798999245e-8, 0.007958525259152888, 1) )
+                    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+                    over "tibia" (
+                        prepend apiSchemas = ["MaterialBindingAPI"]
+                    )
+                    {
+                        rel material:binding = </World/Looks/PhantomXGray> (
+                            bindMaterialAs = "strongerThanDescendants"
+                        )
+                    }
+                }
+
+                def Capsule "viewer_foot_connector" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.016
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.006
+                    double3 xformOp:translate = (0.12, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "viewer_foot" (
+                    prepend apiSchemas = ["MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/Looks/FootRubber>
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+        }
+
+        over "Camera"
+        {
+            quatd xformOp:orient = (0.5000000000000001, 0.5, -0.5, -0.49999999999999994)
+            double3 xformOp:scale = (0.053599998354911804, 0.053599998354911804, 0.053599998354911804)
+            double3 xformOp:translate = (0.1183947783920369, -0.0011661876194449352, -0.042870170364451315)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+    }
+
+    over "PhysicsScene" (
+        prepend apiSchemas = ["PhysxSceneAPI"]
+    )
+    {
+    }
+}
+
+over "Render"
+{
+    over "OmniverseKit"
+    {
+        over "HydraTextures"
+        {
+            over "omni_kit_widget_viewport_ViewportTexture_0"
+            {
+                rel camera = </OmniverseKit_Persp>
+                bool omni:rtx:material:db:syncLoads = 1
+                bool omni:rtx:scene:hydra:materialSyncLoads = 1
+                rel orderedVars = </Render/Vars/LdrColor>
+                custom bool overrideClipRange = 0
+                uniform int2 resolution = (1280, 720)
+            }
+        }
+    }
+}
+
+over "OmniverseKit_Persp" (
+    prepend apiSchemas = ["OmniRtxCameraAutoExposureAPI_1", "OmniRtxCameraExposureAPI_1"]
+    customData = {
+        dictionary omni = {
+            dictionary kit = {
+                bool hide_in_stage_window = 1
+                bool no_delete = 1
+            }
+        }
+    }
+    hide_in_stage_window = true
+    kind = "component"
+    no_delete = true
+)
+{
+    float2 clippingRange = (0.01, 10000000)
+    float exposure:fStop = 5
+    float exposure:responsivity = 1.1026709
+    float exposure:time = 0.02
+    float focalLength = 18.147562
+    float focusDistance = 400
+    custom uniform vector3d omni:kit:centerOfInterest = (0, 0, -4.342288027914898)
+    float3 xformOp:rotateXYZ = (65.06025, 6.679165e-14, 98.46238)
+    float3 xformOp:scale = (1, 1, 1)
+    double3 xformOp:translate = (1.880798704492435, 0.18170132254052124, 0.906734844708267)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+}
+
+over "OmniverseKit_Front" (
+    prepend apiSchemas = ["OmniRtxCameraAutoExposureAPI_1", "OmniRtxCameraExposureAPI_1"]
+    customData = {
+        dictionary omni = {
+            dictionary kit = {
+                bool hide_in_stage_window = 1
+                bool no_delete = 1
+            }
+        }
+    }
+    hide_in_stage_window = true
+    kind = "component"
+    no_delete = true
+)
+{
+    float2 clippingRange = (1, 10000000)
+    float exposure:fStop = 5
+    float exposure:responsivity = 1.1026709
+    float exposure:time = 0.02
+    float horizontalAperture = 38.46239
+    custom uniform vector3d omni:kit:centerOfInterest = (0, 0, -5)
+    token projection = "orthographic"
+    float verticalAperture = 38.46239
+    float3 xformOp:rotateXYZ = (90, -1.2722219e-14, 90)
+    float3 xformOp:scale = (1, 1, 1)
+    double3 xformOp:translate = (5, 0, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+}
+
+over "OmniverseKit_Right" (
+    customData = {
+        dictionary omni = {
+            dictionary kit = {
+                bool hide_in_stage_window = 1
+                bool no_delete = 1
+            }
+        }
+    }
+    hide_in_stage_window = true
+    kind = "component"
+    no_delete = true
+)
+{
+    float2 clippingRange = (1, 10000000)
+    float horizontalAperture = 50
+    custom uniform vector3d omni:kit:centerOfInterest = (0, 0, -5)
+    token projection = "orthographic"
+    float verticalAperture = 50
+    float3 xformOp:rotateXYZ = (90, -1.41245e-30, 1.2722219e-14)
+    float3 xformOp:scale = (1, 1, 1)
+    double3 xformOp:translate = (0, -5, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+}
+
+over "OmniverseKit_Top" (
+    customData = {
+        dictionary omni = {
+            dictionary kit = {
+                bool hide_in_stage_window = 1
+                bool no_delete = 1
+            }
+        }
+    }
+    hide_in_stage_window = true
+    kind = "component"
+    no_delete = true
+)
+{
+    float2 clippingRange = (1, 10000000)
+    float horizontalAperture = 50
+    custom uniform vector3d omni:kit:centerOfInterest = (0, 0, -5)
+    token projection = "orthographic"
+    float verticalAperture = 50
+    float3 xformOp:rotateXYZ = (-1.2722219e-14, -7.016709e-15, -90)
+    float3 xformOp:scale = (1, 1, 1)
+    double3 xformOp:translate = (0, 0, 5)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+}
+

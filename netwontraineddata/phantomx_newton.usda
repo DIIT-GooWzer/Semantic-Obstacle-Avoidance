@@ -1,0 +1,1675 @@
+#usda 1.0
+(
+    customLayerData = {
+        dictionary cameraSettings = {
+            dictionary Front = {
+                double3 position = (5, 0, 0)
+                double radius = 3.8462390899658203
+            }
+            dictionary Perspective = {
+                double3 position = (1.880798704492435, 0.18170132254052124, 0.906734844708267)
+                double3 target = (-2.0137109060710614, -0.39772303507530277, -0.9242560412338525)
+            }
+            dictionary Right = {
+                double3 position = (0, -5, 0)
+                double radius = 5
+            }
+            dictionary Top = {
+                double3 position = (0, 0, 5)
+                double radius = 5
+            }
+            string boundCamera = "/OmniverseKit_Persp"
+        }
+        dictionary omni_layer = {
+            string authoring_layer = "./phantomx_newton.usda"
+        }
+        dictionary renderSettings = {
+        }
+    }
+    defaultPrim = "World"
+    kilogramsPerUnit = 1
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "World"
+{
+    def PhysicsScene "PhysicsScene" (
+        delete apiSchemas = ["MjcSceneAPI", "NewtonXpbdSceneAPI", "PhysxSceneAPI"]
+        prepend apiSchemas = ["NewtonSceneAPI", "MjcSceneAPI"]
+    )
+    {
+        uniform int newton:maxSolverIterations = 32
+        uniform int newton:timeStepsPerSecond = 500
+        vector3f physics:gravityDirection = (0, 0, -1)
+        float physics:gravityMagnitude = 9.81
+    }
+
+    def Xform "PhantomX" (
+        prepend apiSchemas = ["NewtonArticulationRootAPI", "PhysicsArticulationRootAPI"]
+    )
+    {
+        bool newton:selfCollisionEnabled = 0
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        double3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Scope "Links"
+        {
+            def Xform "body_link" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00049, 0.0013, 0.0015, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00049, 0.0013, 0.0015)
+                float physics:mass = 0.85
+                quatf xformOp:orient = (1, 0, 0, 0)
+                double3 xformOp:translate = (0, 0, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Cube "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    double size = 1
+                    float3 xformOp:scale = (0.18, 0.12, 0.055)
+                    double3 xformOp:translate = (0, 0, 0.019999999552965164)
+                    uniform token[] xformOpOrder = ["xformOp:scale", "xformOp:translate"]
+                }
+            }
+
+            def Xform "leg_center_LF" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00001, 0.00001, 0.00001, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+                float physics:mass = 0.005
+                quatf xformOp:orient = (0.9238795, 0, 0, 0.38268343)
+                double3 xformOp:translate = (0.12, 0.06, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Sphere "inertial_proxy" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    bool physics:collisionEnabled = 0
+                    double radius = 0.01
+                }
+            }
+
+            def Xform "coxa_LF" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000019, 0.000033, 0.000029, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000019, 0.000033, 0.000029)
+                float physics:mass = 0.085
+                quatf xformOp:orient = (0.9238795, 0, 0, 0.38268343)
+                double3 xformOp:translate = (0.12, 0.06, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.045
+                    double radius = 0.018
+                    double3 xformOp:translate = (0.026, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "femur_LF" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000016, 0.000028, 0.000025, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000016, 0.000028, 0.000025)
+                float physics:mass = 0.07
+                quatf xformOp:orient = (0.9238795, 0, 0, 0.38268343)
+                double3 xformOp:translate = (0.15676955262170048, 0.09676955262170046, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.055
+                    double radius = 0.017
+                    double3 xformOp:translate = (0.0325, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "tibia_LF" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00003, 0.00005, 0.000055, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00003, 0.00005, 0.000055)
+                float physics:mass = 0.055
+                quatf xformOp:orient = (0.71989363, 0.2398531, -0.5790566, 0.2981897)
+                double3 xformOp:translate = (0.20273149339882607, 0.14273149339882604, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.095
+                    double radius = 0.01
+                    double3 xformOp:translate = (0.055, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "foot_collider" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI", "MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/PhantomX/Materials/Foot> (
+                        bindMaterialAs = "physics"
+                    )
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "leg_center_LM" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00001, 0.00001, 0.00001, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+                float physics:mass = 0.005
+                quatf xformOp:orient = (0.70710677, 0, 0, 0.70710677)
+                double3 xformOp:translate = (0, 0.1, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Sphere "inertial_proxy" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    bool physics:collisionEnabled = 0
+                    double radius = 0.01
+                }
+            }
+
+            def Xform "coxa_LM" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000019, 0.000033, 0.000029, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000019, 0.000033, 0.000029)
+                float physics:mass = 0.085
+                quatf xformOp:orient = (0.70710677, 0, 0, 0.70710677)
+                double3 xformOp:translate = (0, 0.1, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.045
+                    double radius = 0.018
+                    double3 xformOp:translate = (0.026, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "femur_LM" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000016, 0.000028, 0.000025, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000016, 0.000028, 0.000025)
+                float physics:mass = 0.07
+                quatf xformOp:orient = (0.70710677, 0, 0, 0.70710677)
+                double3 xformOp:translate = (3.1840816777831182e-18, 0.152, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.055
+                    double radius = 0.017
+                    double3 xformOp:translate = (0.0325, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "tibia_LM" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00003, 0.00005, 0.000055, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00003, 0.00005, 0.000055)
+                float physics:mass = 0.055
+                quatf xformOp:orient = (0.5509827, 0.44319072, -0.44319072, 0.5509827)
+                double3 xformOp:translate = (7.164183775012016e-18, 0.217, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.095
+                    double radius = 0.01
+                    double3 xformOp:translate = (0.055, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "foot_collider" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI", "MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/PhantomX/Materials/Foot> (
+                        bindMaterialAs = "physics"
+                    )
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "leg_center_LR" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00001, 0.00001, 0.00001, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+                float physics:mass = 0.005
+                quatf xformOp:orient = (0.38268343, 0, 0, 0.9238795)
+                double3 xformOp:translate = (-0.12, 0.06, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Sphere "inertial_proxy" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    bool physics:collisionEnabled = 0
+                    double radius = 0.01
+                }
+            }
+
+            def Xform "coxa_LR" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000019, 0.000033, 0.000029, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000019, 0.000033, 0.000029)
+                float physics:mass = 0.085
+                quatf xformOp:orient = (0.38268343, 0, 0, 0.9238795)
+                double3 xformOp:translate = (-0.12, 0.06, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.045
+                    double radius = 0.018
+                    double3 xformOp:translate = (0.026, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "femur_LR" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000016, 0.000028, 0.000025, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000016, 0.000028, 0.000025)
+                float physics:mass = 0.07
+                quatf xformOp:orient = (0.38268343, 0, 0, 0.9238795)
+                double3 xformOp:translate = (-0.15676955262170045, 0.09676955262170048, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.055
+                    double radius = 0.017
+                    double3 xformOp:translate = (0.0325, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "tibia_LR" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00003, 0.00005, 0.000055, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00003, 0.00005, 0.000055)
+                float physics:mass = 0.055
+                quatf xformOp:orient = (0.2981897, 0.5790566, -0.2398531, 0.71989363)
+                double3 xformOp:translate = (-0.20273149339882604, 0.14273149339882607, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.095
+                    double radius = 0.01
+                    double3 xformOp:translate = (0.055, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "foot_collider" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI", "MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/PhantomX/Materials/Foot> (
+                        bindMaterialAs = "physics"
+                    )
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "leg_center_RF" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00001, 0.00001, 0.00001, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+                float physics:mass = 0.005
+                quatf xformOp:orient = (0.9238795, 0, 0, -0.38268343)
+                double3 xformOp:translate = (0.12, -0.06, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Sphere "inertial_proxy" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    bool physics:collisionEnabled = 0
+                    double radius = 0.01
+                }
+            }
+
+            def Xform "coxa_RF" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000019, 0.000033, 0.000029, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000019, 0.000033, 0.000029)
+                float physics:mass = 0.085
+                quatf xformOp:orient = (0.9238795, 0, 0, -0.38268343)
+                double3 xformOp:translate = (0.12, -0.06, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.045
+                    double radius = 0.018
+                    double3 xformOp:translate = (0.026, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "femur_RF" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000016, 0.000028, 0.000025, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000016, 0.000028, 0.000025)
+                float physics:mass = 0.07
+                quatf xformOp:orient = (0.9238795, 0, 0, -0.38268343)
+                double3 xformOp:translate = (0.15676955262170048, -0.09676955262170046, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.055
+                    double radius = 0.017
+                    double3 xformOp:translate = (0.0325, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "tibia_RF" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00003, 0.00005, 0.000055, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00003, 0.00005, 0.000055)
+                float physics:mass = 0.055
+                quatf xformOp:orient = (0.71989363, -0.2398531, -0.5790566, -0.2981897)
+                double3 xformOp:translate = (0.20273149339882607, -0.14273149339882604, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.095
+                    double radius = 0.01
+                    double3 xformOp:translate = (0.055, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "foot_collider" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI", "MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/PhantomX/Materials/Foot> (
+                        bindMaterialAs = "physics"
+                    )
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "leg_center_RM" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00001, 0.00001, 0.00001, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+                float physics:mass = 0.005
+                quatf xformOp:orient = (0.70710677, 0, 0, -0.70710677)
+                double3 xformOp:translate = (0, -0.1, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Sphere "inertial_proxy" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    bool physics:collisionEnabled = 0
+                    double radius = 0.01
+                }
+            }
+
+            def Xform "coxa_RM" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000019, 0.000033, 0.000029, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000019, 0.000033, 0.000029)
+                float physics:mass = 0.085
+                quatf xformOp:orient = (0.70710677, 0, 0, -0.70710677)
+                double3 xformOp:translate = (0, -0.1, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.045
+                    double radius = 0.018
+                    double3 xformOp:translate = (0.026, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "femur_RM" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000016, 0.000028, 0.000025, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000016, 0.000028, 0.000025)
+                float physics:mass = 0.07
+                quatf xformOp:orient = (0.70710677, 0, 0, -0.70710677)
+                double3 xformOp:translate = (3.1840816777831182e-18, -0.152, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.055
+                    double radius = 0.017
+                    double3 xformOp:translate = (0.0325, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "tibia_RM" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00003, 0.00005, 0.000055, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00003, 0.00005, 0.000055)
+                float physics:mass = 0.055
+                quatf xformOp:orient = (0.5509827, -0.44319072, -0.44319072, -0.5509827)
+                double3 xformOp:translate = (7.164183775012016e-18, -0.217, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.095
+                    double radius = 0.01
+                    double3 xformOp:translate = (0.055, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "foot_collider" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI", "MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/PhantomX/Materials/Foot> (
+                        bindMaterialAs = "physics"
+                    )
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "leg_center_RR" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00001, 0.00001, 0.00001, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00001, 0.00001, 0.00001)
+                float physics:mass = 0.005
+                quatf xformOp:orient = (0.38268343, 0, 0, -0.9238795)
+                double3 xformOp:translate = (-0.12, -0.06, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Sphere "inertial_proxy" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    bool physics:collisionEnabled = 0
+                    double radius = 0.01
+                }
+            }
+
+            def Xform "coxa_RR" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000019, 0.000033, 0.000029, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000019, 0.000033, 0.000029)
+                float physics:mass = 0.085
+                quatf xformOp:orient = (0.38268343, 0, 0, -0.9238795)
+                double3 xformOp:translate = (-0.12, -0.06, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.045
+                    double radius = 0.018
+                    double3 xformOp:translate = (0.026, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "femur_RR" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.000016, 0.000028, 0.000025, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.000016, 0.000028, 0.000025)
+                float physics:mass = 0.07
+                quatf xformOp:orient = (0.38268343, 0, 0, -0.9238795)
+                double3 xformOp:translate = (-0.15676955262170045, -0.09676955262170048, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.055
+                    double radius = 0.017
+                    double3 xformOp:translate = (0.0325, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+
+            def Xform "tibia_RR" (
+                prepend apiSchemas = ["PhysicsRigidBodyAPI", "NewtonMassAPI", "PhysicsMassAPI"]
+            )
+            {
+                double[] newton:inertia = [0.00003, 0.00005, 0.000055, 0, 0, 0]
+                float3 physics:diagonalInertia = (0.00003, 0.00005, 0.000055)
+                float physics:mass = 0.055
+                quatf xformOp:orient = (0.2981897, -0.5790566, -0.2398531, -0.71989363)
+                double3 xformOp:translate = (-0.20273149339882604, -0.14273149339882607, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient"]
+
+                def Capsule "collision" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI"]
+                )
+                {
+                    uniform token axis = "X"
+                    double height = 0.095
+                    double radius = 0.01
+                    double3 xformOp:translate = (0.055, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+
+                def Sphere "foot_collider" (
+                    prepend apiSchemas = ["NewtonCollisionAPI", "PhysicsCollisionAPI", "MaterialBindingAPI"]
+                )
+                {
+                    rel material:binding = </World/PhantomX/Materials/Foot> (
+                        bindMaterialAs = "physics"
+                    )
+                    double radius = 0.008
+                    double3 xformOp:translate = (0.137823, 0, 0)
+                    uniform token[] xformOpOrder = ["xformOp:translate"]
+                }
+            }
+        }
+
+        def Scope "Joints"
+        {
+            def PhysicsFixedJoint "mount_LF"
+            {
+                rel physics:body0 = </World/PhantomX/Links/body_link>
+                rel physics:body1 = </World/PhantomX/Links/leg_center_LF>
+                point3f physics:localPos0 = (0.12, 0.06, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.9238795, -0, -0, -0.38268343)
+            }
+
+            def PhysicsRevoluteJoint "coxa_joint_LF" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Z"
+                rel physics:body0 = </World/PhantomX/Links/leg_center_LF>
+                rel physics:body1 = </World/PhantomX/Links/coxa_LF>
+                point3f physics:localPos0 = (0, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -45
+                float physics:upperLimit = 45
+            }
+
+            def PhysicsRevoluteJoint "femur_joint_LF" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/coxa_LF>
+                rel physics:body1 = </World/PhantomX/Links/femur_LF>
+                point3f physics:localPos0 = (0.052, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -105
+                float physics:upperLimit = 90
+            }
+
+            def PhysicsRevoluteJoint "tibia_joint_LF" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/femur_LF>
+                rel physics:body1 = </World/PhantomX/Links/tibia_LF>
+                point3f physics:localPos0 = (0.065, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.7792072, -0, -0.6267663, -0)
+                float physics:lowerLimit = -150
+                float physics:upperLimit = 0
+            }
+
+            def PhysicsFixedJoint "mount_LM"
+            {
+                rel physics:body0 = </World/PhantomX/Links/body_link>
+                rel physics:body1 = </World/PhantomX/Links/leg_center_LM>
+                point3f physics:localPos0 = (0, 0.1, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.70710677, -0, -0, -0.70710677)
+            }
+
+            def PhysicsRevoluteJoint "coxa_joint_LM" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Z"
+                rel physics:body0 = </World/PhantomX/Links/leg_center_LM>
+                rel physics:body1 = </World/PhantomX/Links/coxa_LM>
+                point3f physics:localPos0 = (0, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -45
+                float physics:upperLimit = 45
+            }
+
+            def PhysicsRevoluteJoint "femur_joint_LM" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/coxa_LM>
+                rel physics:body1 = </World/PhantomX/Links/femur_LM>
+                point3f physics:localPos0 = (0.052, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -105
+                float physics:upperLimit = 90
+            }
+
+            def PhysicsRevoluteJoint "tibia_joint_LM" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/femur_LM>
+                rel physics:body1 = </World/PhantomX/Links/tibia_LM>
+                point3f physics:localPos0 = (0.065, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.7792072, -0, -0.6267663, -0)
+                float physics:lowerLimit = -150
+                float physics:upperLimit = 0
+            }
+
+            def PhysicsFixedJoint "mount_LR"
+            {
+                rel physics:body0 = </World/PhantomX/Links/body_link>
+                rel physics:body1 = </World/PhantomX/Links/leg_center_LR>
+                point3f physics:localPos0 = (-0.12, 0.06, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.38268343, -0, -0, -0.9238795)
+            }
+
+            def PhysicsRevoluteJoint "coxa_joint_LR" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Z"
+                rel physics:body0 = </World/PhantomX/Links/leg_center_LR>
+                rel physics:body1 = </World/PhantomX/Links/coxa_LR>
+                point3f physics:localPos0 = (0, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -45
+                float physics:upperLimit = 45
+            }
+
+            def PhysicsRevoluteJoint "femur_joint_LR" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/coxa_LR>
+                rel physics:body1 = </World/PhantomX/Links/femur_LR>
+                point3f physics:localPos0 = (0.052, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -105
+                float physics:upperLimit = 90
+            }
+
+            def PhysicsRevoluteJoint "tibia_joint_LR" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/femur_LR>
+                rel physics:body1 = </World/PhantomX/Links/tibia_LR>
+                point3f physics:localPos0 = (0.065, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.7792072, -0, -0.6267663, -0)
+                float physics:lowerLimit = -150
+                float physics:upperLimit = 0
+            }
+
+            def PhysicsFixedJoint "mount_RF"
+            {
+                rel physics:body0 = </World/PhantomX/Links/body_link>
+                rel physics:body1 = </World/PhantomX/Links/leg_center_RF>
+                point3f physics:localPos0 = (0.12, -0.06, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.9238795, 0, 0, 0.38268343)
+            }
+
+            def PhysicsRevoluteJoint "coxa_joint_RF" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Z"
+                rel physics:body0 = </World/PhantomX/Links/leg_center_RF>
+                rel physics:body1 = </World/PhantomX/Links/coxa_RF>
+                point3f physics:localPos0 = (0, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -45
+                float physics:upperLimit = 45
+            }
+
+            def PhysicsRevoluteJoint "femur_joint_RF" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/coxa_RF>
+                rel physics:body1 = </World/PhantomX/Links/femur_RF>
+                point3f physics:localPos0 = (0.052, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -105
+                float physics:upperLimit = 90
+            }
+
+            def PhysicsRevoluteJoint "tibia_joint_RF" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/femur_RF>
+                rel physics:body1 = </World/PhantomX/Links/tibia_RF>
+                point3f physics:localPos0 = (0.065, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.7792072, -0, -0.6267663, -0)
+                float physics:lowerLimit = -150
+                float physics:upperLimit = 0
+            }
+
+            def PhysicsFixedJoint "mount_RM"
+            {
+                rel physics:body0 = </World/PhantomX/Links/body_link>
+                rel physics:body1 = </World/PhantomX/Links/leg_center_RM>
+                point3f physics:localPos0 = (0, -0.1, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.70710677, 0, 0, 0.70710677)
+            }
+
+            def PhysicsRevoluteJoint "coxa_joint_RM" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Z"
+                rel physics:body0 = </World/PhantomX/Links/leg_center_RM>
+                rel physics:body1 = </World/PhantomX/Links/coxa_RM>
+                point3f physics:localPos0 = (0, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -45
+                float physics:upperLimit = 45
+            }
+
+            def PhysicsRevoluteJoint "femur_joint_RM" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/coxa_RM>
+                rel physics:body1 = </World/PhantomX/Links/femur_RM>
+                point3f physics:localPos0 = (0.052, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -105
+                float physics:upperLimit = 90
+            }
+
+            def PhysicsRevoluteJoint "tibia_joint_RM" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/femur_RM>
+                rel physics:body1 = </World/PhantomX/Links/tibia_RM>
+                point3f physics:localPos0 = (0.065, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.7792072, -0, -0.6267663, -0)
+                float physics:lowerLimit = -150
+                float physics:upperLimit = 0
+            }
+
+            def PhysicsFixedJoint "mount_RR"
+            {
+                rel physics:body0 = </World/PhantomX/Links/body_link>
+                rel physics:body1 = </World/PhantomX/Links/leg_center_RR>
+                point3f physics:localPos0 = (-0.12, -0.06, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.38268343, 0, 0, 0.9238795)
+            }
+
+            def PhysicsRevoluteJoint "coxa_joint_RR" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Z"
+                rel physics:body0 = </World/PhantomX/Links/leg_center_RR>
+                rel physics:body1 = </World/PhantomX/Links/coxa_RR>
+                point3f physics:localPos0 = (0, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -45
+                float physics:upperLimit = 45
+            }
+
+            def PhysicsRevoluteJoint "femur_joint_RR" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/coxa_RR>
+                rel physics:body1 = </World/PhantomX/Links/femur_RR>
+                point3f physics:localPos0 = (0.052, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                float physics:lowerLimit = -105
+                float physics:upperLimit = 90
+            }
+
+            def PhysicsRevoluteJoint "tibia_joint_RR" (
+                prepend apiSchemas = ["NewtonJointAPI"]
+            )
+            {
+                float newton:armature = 0.0005
+                float newton:damping = 0.0008726646
+                float newton:friction = 0.005
+                float newton:velocityLimit = 354
+                uniform token physics:axis = "Y"
+                rel physics:body0 = </World/PhantomX/Links/femur_RR>
+                rel physics:body1 = </World/PhantomX/Links/tibia_RR>
+                point3f physics:localPos0 = (0.065, 0, 0)
+                point3f physics:localPos1 = (0, 0, 0)
+                quatf physics:localRot1 = (0.7792072, -0, -0.6267663, -0)
+                float physics:lowerLimit = -150
+                float physics:upperLimit = 0
+            }
+        }
+
+        def Scope "Actuators"
+        {
+            def NewtonActuator "coxa_LF" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/coxa_joint_LF>
+            }
+
+            def NewtonActuator "femur_LF" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/femur_joint_LF>
+            }
+
+            def NewtonActuator "tibia_LF" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/tibia_joint_LF>
+            }
+
+            def NewtonActuator "coxa_LM" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/coxa_joint_LM>
+            }
+
+            def NewtonActuator "femur_LM" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/femur_joint_LM>
+            }
+
+            def NewtonActuator "tibia_LM" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/tibia_joint_LM>
+            }
+
+            def NewtonActuator "coxa_LR" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/coxa_joint_LR>
+            }
+
+            def NewtonActuator "femur_LR" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/femur_joint_LR>
+            }
+
+            def NewtonActuator "tibia_LR" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/tibia_joint_LR>
+            }
+
+            def NewtonActuator "coxa_RF" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/coxa_joint_RF>
+            }
+
+            def NewtonActuator "femur_RF" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/femur_joint_RF>
+            }
+
+            def NewtonActuator "tibia_RF" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/tibia_joint_RF>
+            }
+
+            def NewtonActuator "coxa_RM" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/coxa_joint_RM>
+            }
+
+            def NewtonActuator "femur_RM" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/femur_joint_RM>
+            }
+
+            def NewtonActuator "tibia_RM" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/tibia_joint_RM>
+            }
+
+            def NewtonActuator "coxa_RR" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/coxa_joint_RR>
+            }
+
+            def NewtonActuator "femur_RR" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/femur_joint_RR>
+            }
+
+            def NewtonActuator "tibia_RR" (
+                prepend apiSchemas = ["NewtonPDControlAPI", "NewtonMaxEffortClampingAPI"]
+            )
+            {
+                float newton:kd = 4
+                float newton:kp = 180
+                float newton:maxEffort = 1.5
+                rel newton:targets = </World/PhantomX/Joints/tibia_joint_RR>
+            }
+        }
+
+        def "Materials"
+        {
+            def Material "Foot" (
+                prepend apiSchemas = ["NewtonMaterialAPI"]
+            )
+            {
+                float physics:dynamicFriction = 1
+                float physics:restitution = 0
+                float physics:staticFriction = 1.4
+            }
+        }
+
+        def Camera "Camera" (
+            prepend apiSchemas = ["OmniRtxCameraAutoExposureAPI_1", "OmniRtxCameraExposureAPI_1"]
+        )
+        {
+            float2 clippingRange = (0.01, 10000000)
+            float exposure:fStop = 5
+            float exposure:responsivity = 1.1026709
+            float exposure:time = 0.02
+            float focalLength = 18.147562
+            float focusDistance = 400
+            bool omni:kit:cameraLock = 1
+            quatd xformOp:orient = (-0.5000000000000002, 0.4999999999999998, 0.5000000000000001, -0.5000000000000001)
+            double3 xformOp:scale = (0.053599998354911804, 0.053599998354911804, 0.053599998354911804)
+            double3 xformOp:translate = (0.1183947783920369, -0.0011661876194449352, -0.042870170364451315)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def "Graph"
+            {
+                def OmniGraph "ROS_Camera"
+                {
+                    token evaluationMode = "Automatic"
+                    token evaluator:type = "execution"
+                    token fabricCacheBacking = "StageWithoutHistory"
+                    int2 fileFormatVersion = (1, 9)
+                    token pipelineStage = "pipelineStageSimulation"
+
+                    def OmniGraphNode "OnPlaybackTick"
+                    {
+                        token node:type = "omni.graph.action.OnPlaybackTick"
+                        int node:typeVersion = 2
+                        custom double outputs:deltaSeconds
+                        custom double outputs:frame
+                        custom uint outputs:tick (
+                            customData = {
+                                bool isExecution = 1
+                            }
+                        )
+                        custom double outputs:time
+                    }
+
+                    def OmniGraphNode "CameraInfoPublish"
+                    {
+                        custom uint64 inputs:context
+                        prepend uint64 inputs:context.connect = </World/PhantomX/Camera/Graph/ROS_Camera/Context.outputs:context>
+                        custom bool inputs:enabled
+                        custom uint inputs:execIn (
+                            customData = {
+                                bool isExecution = 1
+                            }
+                        )
+                        prepend uint inputs:execIn.connect = </World/PhantomX/Camera/Graph/ROS_Camera/RenderProduct.outputs:execOut>
+                        custom string inputs:frameId = "sim_camera"
+                        custom string inputs:frameIdRight
+                        custom uint inputs:frameSkipCount
+                        custom string inputs:nodeNamespace = ""
+                        custom string inputs:qosProfile
+                        custom uint64 inputs:queueSize
+                        custom token inputs:renderProductPath
+                        prepend token inputs:renderProductPath.connect = </World/PhantomX/Camera/Graph/ROS_Camera/RenderProduct.outputs:renderProductPath>
+                        custom token inputs:renderProductPathRight
+                        custom bool inputs:resetSimulationTimeOnStop = 1
+                        custom string inputs:topicName = "camera_info"
+                        custom string inputs:topicNameRight
+                        custom bool inputs:useSystemTime
+                        token node:type = "isaacsim.ros2.bridge.ROS2CameraInfoHelper"
+                        int node:typeVersion = 1
+                    }
+
+                    def OmniGraphNode "RenderProduct"
+                    {
+                        custom rel inputs:cameraPrim = </World/PhantomX/Camera> (
+                            customData = {
+                                dictionary omni = {
+                                    dictionary graph = {
+                                        string relType = "target"
+                                    }
+                                }
+                            }
+                        )
+                        custom bool inputs:enabled
+                        custom uint inputs:execIn (
+                            customData = {
+                                bool isExecution = 1
+                            }
+                        )
+                        prepend uint inputs:execIn.connect = </World/PhantomX/Camera/Graph/ROS_Camera/RunOnce.outputs:step>
+                        custom uint inputs:height
+                        custom rel inputs:renderProductPrim (
+                            customData = {
+                                dictionary omni = {
+                                    dictionary graph = {
+                                        string relType = "target"
+                                    }
+                                }
+                            }
+                        )
+                        custom uint inputs:width
+                        token node:type = "isaacsim.core.nodes.IsaacCreateRenderProduct"
+                        int node:typeVersion = 3
+                        custom uint outputs:execOut (
+                            customData = {
+                                bool isExecution = 1
+                            }
+                        )
+                        custom token outputs:renderProductPath
+                    }
+
+                    def OmniGraphNode "RunOnce"
+                    {
+                        custom uint inputs:execIn (
+                            customData = {
+                                bool isExecution = 1
+                            }
+                        )
+                        prepend uint inputs:execIn.connect = </World/PhantomX/Camera/Graph/ROS_Camera/OnPlaybackTick.outputs:tick>
+                        token node:type = "isaacsim.core.nodes.OgnIsaacRunOneSimulationFrame"
+                        int node:typeVersion = 1
+                        custom uint outputs:step (
+                            customData = {
+                                bool isExecution = 1
+                            }
+                        )
+                    }
+
+                    def OmniGraphNode "Context"
+                    {
+                        custom uchar inputs:domain_id
+                        custom bool inputs:useDomainIDEnvVar
+                        token node:type = "isaacsim.ros2.bridge.ROS2Context"
+                        int node:typeVersion = 2
+                        custom uint64 outputs:context
+                    }
+
+                    def OmniGraphNode "RGBPublish"
+                    {
+                        custom uint64 inputs:context
+                        prepend uint64 inputs:context.connect = </World/PhantomX/Camera/Graph/ROS_Camera/Context.outputs:context>
+                        custom bool inputs:enabled
+                        custom bool inputs:enableSemanticLabels
+                        custom uint inputs:execIn (
+                            customData = {
+                                bool isExecution = 1
+                            }
+                        )
+                        prepend uint inputs:execIn.connect = </World/PhantomX/Camera/Graph/ROS_Camera/RenderProduct.outputs:execOut>
+                        custom string inputs:frameId = "sim_camera"
+                        custom uint inputs:frameSkipCount
+                        custom string inputs:nodeNamespace = ""
+                        custom string inputs:qosProfile
+                        custom uint64 inputs:queueSize
+                        custom token inputs:renderProductPath
+                        prepend token inputs:renderProductPath.connect = </World/PhantomX/Camera/Graph/ROS_Camera/RenderProduct.outputs:renderProductPath>
+                        custom bool inputs:resetSimulationTimeOnStop = 1
+                        custom string inputs:semanticLabelsTopicName
+                        custom string inputs:srtxCompressionType
+                        custom float2 inputs:stereoOffset
+                        custom string inputs:topicName = "/rgb"
+                        custom token inputs:type = "rgb" (
+                            allowedTokens = ["rgb", "rgb_h264", "depth", "depth_pcl", "instance_segmentation", "semantic_segmentation", "bbox_2d_tight", "bbox_2d_loose", "bbox_3d"]
+                        )
+                        custom bool inputs:useSystemTime
+                        token node:type = "isaacsim.ros2.bridge.ROS2CameraHelper"
+                        int node:typeVersion = 3
+                    }
+
+                    def OmniGraphNode "DepthPublish"
+                    {
+                        custom uint64 inputs:context
+                        prepend uint64 inputs:context.connect = </World/PhantomX/Camera/Graph/ROS_Camera/Context.outputs:context>
+                        custom bool inputs:enabled
+                        custom bool inputs:enableSemanticLabels
+                        custom uint inputs:execIn (
+                            customData = {
+                                bool isExecution = 1
+                            }
+                        )
+                        prepend uint inputs:execIn.connect = </World/PhantomX/Camera/Graph/ROS_Camera/RenderProduct.outputs:execOut>
+                        custom string inputs:frameId = "sim_camera"
+                        custom uint inputs:frameSkipCount
+                        custom string inputs:nodeNamespace = ""
+                        custom string inputs:qosProfile
+                        custom uint64 inputs:queueSize
+                        custom token inputs:renderProductPath
+                        prepend token inputs:renderProductPath.connect = </World/PhantomX/Camera/Graph/ROS_Camera/RenderProduct.outputs:renderProductPath>
+                        custom bool inputs:resetSimulationTimeOnStop = 1
+                        custom string inputs:semanticLabelsTopicName
+                        custom string inputs:srtxCompressionType
+                        custom float2 inputs:stereoOffset
+                        custom string inputs:topicName = "/depth"
+                        custom token inputs:type = "depth" (
+                            allowedTokens = ["rgb", "rgb_h264", "depth", "depth_pcl", "instance_segmentation", "semantic_segmentation", "bbox_2d_tight", "bbox_2d_loose", "bbox_3d"]
+                        )
+                        custom bool inputs:useSystemTime
+                        token node:type = "isaacsim.ros2.bridge.ROS2CameraHelper"
+                        int node:typeVersion = 3
+                    }
+                }
+            }
+        }
+    }
+}
+
+def "Render" (
+    hide_in_stage_window = true
+    no_delete = true
+)
+{
+    def "OmniverseKit"
+    {
+        def "HydraTextures" (
+            hide_in_stage_window = true
+            no_delete = true
+        )
+        {
+            def RenderProduct "omni_kit_widget_viewport_ViewportTexture_0" (
+                prepend apiSchemas = ["OmniRtxSettingsCommonAdvancedAPI_1", "OmniRtxSettingsRtAdvancedAPI_1", "OmniRtxSettingsPtAdvancedAPI_1", "OmniRtxPostColorGradingAPI_1", "OmniRtxPostChromaticAberrationAPI_1", "OmniRtxPostBloomPhysicalAPI_1", "OmniRtxPostMatteObjectAPI_1", "OmniRtxPostCompositingAPI_1", "OmniRtxPostDofAPI_1", "OmniRtxPostMotionBlurAPI_1", "OmniRtxPostTvNoiseAPI_1", "OmniRtxPostTonemapIrayReinhardAPI_1", "OmniRtxPostDebugSettingsAPI_1", "OmniRtxDebugSettingsAPI_1"]
+                hide_in_stage_window = true
+                no_delete = true
+            )
+            {
+                rel camera = </OmniverseKit_Persp>
+                token omni:rtx:ambientOcclusion:denoiserMode = "none"
+                token omni:rtx:background:source:texture:textureMode = "repeatMirrored"
+                token omni:rtx:background:source:type = "domeLight"
+                bool omni:rtx:debug:view:pixelDebug:enableFixedTextPos = 1
+                token omni:rtx:directLighting:sampledLighting:denoisingTechnique = "None"
+                bool omni:rtx:dlss:frameGeneration = 0
+                float3 omni:rtx:domeLight:rotationAxis = (0, 0, 1)
+                bool omni:rtx:indirectDiffuse:denoiser:enabled = 0
+                bool omni:rtx:material:db:syncLoads = 1
+                token omni:rtx:post:dlss:execMode = "performance"
+                bool omni:rtx:post:registeredCompositing:invertColorCorrection = 1
+                bool omni:rtx:post:registeredCompositing:invertToneMap = 1
+                bool omni:rtx:pt:adaptiveSampling:filterError = 0
+                uint omni:rtx:pt:adaptiveSampling:fixedSppIterations = 2
+                uint omni:rtx:pt:maxSamplesPerLaunch = 2073600
+                uint omni:rtx:pt:mgpu:maxPixelsPerRegionExponent = 12
+                bool omni:rtx:reflections:denoiser:enabled = 0
+                token omni:rtx:rendermode = "RealTimePathTracing"
+                color3f omni:rtx:rt:ambientLight:color = (0.1, 0.1, 0.1)
+                bool omni:rtx:rt:demoire = 0
+                bool omni:rtx:rt:lightcache:spatialCache:dontResolveConflicts = 1
+                int omni:rtx:rt:sss:samples = 1
+                uint omni:rtx:rtpt:maxVolumeBounces = 15
+                float omni:rtx:rtpt:modulatingRoughnessThreshold = 0.08
+                bool omni:rtx:scene:hydra:materialSyncLoads = 1
+                bool omni:rtx:scene:hydra:mdlMaterialWarmup = 1
+                rel orderedVars = </Render/Vars/LdrColor>
+                custom bool overrideClipRange = 0
+                uniform int2 resolution = (1280, 720)
+            }
+
+            def RenderProduct "omni_kit_widget_viewport_ViewportTexture_1" (
+                prepend apiSchemas = ["OmniRtxSettingsCommonAdvancedAPI_1", "OmniRtxSettingsRtAdvancedAPI_1", "OmniRtxSettingsPtAdvancedAPI_1", "OmniRtxPostColorGradingAPI_1", "OmniRtxPostChromaticAberrationAPI_1", "OmniRtxPostBloomPhysicalAPI_1", "OmniRtxPostMatteObjectAPI_1", "OmniRtxPostCompositingAPI_1", "OmniRtxPostDofAPI_1", "OmniRtxPostMotionBlurAPI_1", "OmniRtxPostTvNoiseAPI_1", "OmniRtxPostTonemapIrayReinhardAPI_1", "OmniRtxPostDebugSettingsAPI_1", "OmniRtxDebugSettingsAPI_1"]
+                hide_in_stage_window = true
+                no_delete = true
+            )
+            {
+                rel camera = </OmniverseKit_Persp>
+                token omni:rtx:ambientOcclusion:denoiserMode = "none"
+                token omni:rtx:background:source:texture:textureMode = "repeatMirrored"
+                token omni:rtx:background:source:type = "domeLight"
+                bool omni:rtx:debug:view:pixelDebug:enableFixedTextPos = 1
+                token omni:rtx:directLighting:sampledLighting:denoisingTechnique = "None"
+                bool omni:rtx:dlss:frameGeneration = 0
+                float3 omni:rtx:domeLight:rotationAxis = (0, 0, 1)
+                bool omni:rtx:indirectDiffuse:denoiser:enabled = 0
+                bool omni:rtx:material:db:syncLoads = 1
+                token omni:rtx:post:dlss:execMode = "performance"
+                bool omni:rtx:post:registeredCompositing:invertColorCorrection = 1
+                bool omni:rtx:post:registeredCompositing:invertToneMap = 1
+                bool omni:rtx:pt:adaptiveSampling:filterError = 0
+                uint omni:rtx:pt:adaptiveSampling:fixedSppIterations = 2
+                uint omni:rtx:pt:maxSamplesPerLaunch = 2073600
+                uint omni:rtx:pt:mgpu:maxPixelsPerRegionExponent = 12
+                bool omni:rtx:reflections:denoiser:enabled = 0
+                token omni:rtx:rendermode = "RealTimePathTracing"
+                color3f omni:rtx:rt:ambientLight:color = (0.1, 0.1, 0.1)
+                bool omni:rtx:rt:demoire = 0
+                bool omni:rtx:rt:lightcache:spatialCache:dontResolveConflicts = 1
+                int omni:rtx:rt:sss:samples = 1
+                uint omni:rtx:rtpt:maxVolumeBounces = 15
+                float omni:rtx:rtpt:modulatingRoughnessThreshold = 0.08
+                bool omni:rtx:scene:hydra:materialSyncLoads = 1
+                bool omni:rtx:scene:hydra:mdlMaterialWarmup = 1
+                rel orderedVars = </Render/Vars/LdrColor>
+                custom bool overrideClipRange = 0
+                uniform int2 resolution = (1280, 720)
+            }
+        }
+    }
+
+    def RenderSettings "OmniverseGlobalRenderSettings" (
+        prepend apiSchemas = ["OmniRtxSettingsGlobalRtAdvancedAPI_1", "OmniRtxSettingsGlobalPtAdvancedAPI_1"]
+        no_delete = true
+    )
+    {
+        rel products = [
+            </Render/OmniverseKit/HydraTextures/omni_kit_widget_viewport_ViewportTexture_0>,
+            </Render/OmniverseKit/HydraTextures/omni_kit_widget_viewport_ViewportTexture_1>,
+        ]
+    }
+
+    def "Vars"
+    {
+        def RenderVar "LdrColor" (
+            hide_in_stage_window = true
+            no_delete = true
+        )
+        {
+            uniform string sourceName = "LdrColor"
+            uniform token sourceType = "raw"
+        }
+    }
+}
+
+over "OmniverseKit_Persp" (
+    prepend apiSchemas = ["OmniRtxCameraAutoExposureAPI_1", "OmniRtxCameraExposureAPI_1"]
+    customData = {
+        dictionary omni = {
+            dictionary kit = {
+                bool hide_in_stage_window = 1
+                bool no_delete = 1
+            }
+        }
+    }
+    hide_in_stage_window = true
+    kind = "component"
+    no_delete = true
+)
+{
+    float2 clippingRange = (0.01, 10000000)
+    float exposure:fStop = 5
+    float exposure:responsivity = 1.1026709
+    float exposure:time = 0.02
+    float focalLength = 18.147562
+    float focusDistance = 400
+    custom uniform vector3d omni:kit:centerOfInterest = (0, 0, -4.342288027914898)
+    float3 xformOp:rotateXYZ = (65.06025, 6.679165e-14, 98.46238)
+    float3 xformOp:scale = (1, 1, 1)
+    double3 xformOp:translate = (1.880798704492435, 0.18170132254052124, 0.906734844708267)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+}
+
+over "OmniverseKit_Front" (
+    prepend apiSchemas = ["OmniRtxCameraAutoExposureAPI_1", "OmniRtxCameraExposureAPI_1"]
+    customData = {
+        dictionary omni = {
+            dictionary kit = {
+                bool hide_in_stage_window = 1
+                bool no_delete = 1
+            }
+        }
+    }
+    hide_in_stage_window = true
+    kind = "component"
+    no_delete = true
+)
+{
+    float2 clippingRange = (1, 10000000)
+    float exposure:fStop = 5
+    float exposure:responsivity = 1.1026709
+    float exposure:time = 0.02
+    float horizontalAperture = 38.46239
+    custom uniform vector3d omni:kit:centerOfInterest = (0, 0, -5)
+    token projection = "orthographic"
+    float verticalAperture = 38.46239
+    float3 xformOp:rotateXYZ = (90, -1.2722219e-14, 90)
+    float3 xformOp:scale = (1, 1, 1)
+    double3 xformOp:translate = (5, 0, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+}
+
+over "OmniverseKit_Right" (
+    customData = {
+        dictionary omni = {
+            dictionary kit = {
+                bool hide_in_stage_window = 1
+                bool no_delete = 1
+            }
+        }
+    }
+    hide_in_stage_window = true
+    kind = "component"
+    no_delete = true
+)
+{
+    float2 clippingRange = (1, 10000000)
+    float horizontalAperture = 50
+    custom uniform vector3d omni:kit:centerOfInterest = (0, 0, -5)
+    token projection = "orthographic"
+    float verticalAperture = 50
+    float3 xformOp:rotateXYZ = (90, -1.41245e-30, 1.2722219e-14)
+    float3 xformOp:scale = (1, 1, 1)
+    double3 xformOp:translate = (0, -5, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+}
+
+over "OmniverseKit_Top" (
+    customData = {
+        dictionary omni = {
+            dictionary kit = {
+                bool hide_in_stage_window = 1
+                bool no_delete = 1
+            }
+        }
+    }
+    hide_in_stage_window = true
+    kind = "component"
+    no_delete = true
+)
+{
+    float2 clippingRange = (1, 10000000)
+    float horizontalAperture = 50
+    custom uniform vector3d omni:kit:centerOfInterest = (0, 0, -5)
+    token projection = "orthographic"
+    float verticalAperture = 50
+    float3 xformOp:rotateXYZ = (-1.2722219e-14, -7.016709e-15, -90)
+    float3 xformOp:scale = (1, 1, 1)
+    double3 xformOp:translate = (0, 0, 5)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+}
+
