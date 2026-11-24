@@ -1,0 +1,14 @@
+{
+  "validation": "PASS: real ONNX blank-input compatibility check; not a trial",
+  "python": "3.12.13",
+  "onnxruntime": "1.26.0",
+  "providers": [
+    "CPUExecutionProvider"
+  ],
+  "output_shape": [
+    1,
+    300,
+    6
+  ],
+  "onnx_sha256": "6982fcf262dd956cc224ce95f3e1a9a0d741fa1886f2998774695b75d778f8f7"
+}
